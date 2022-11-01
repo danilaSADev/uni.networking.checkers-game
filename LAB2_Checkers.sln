@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkers_Server", "Checkers
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckersClient", "CheckersClient\CheckersClient.csproj", "{0D8FC980-CEAA-4F6E-B232-3989BA158CAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{BA002E48-1E57-413B-9953-598C172F6546}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0D8FC980-CEAA-4F6E-B232-3989BA158CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D8FC980-CEAA-4F6E-B232-3989BA158CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D8FC980-CEAA-4F6E-B232-3989BA158CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA002E48-1E57-413B-9953-598C172F6546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA002E48-1E57-413B-9953-598C172F6546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA002E48-1E57-413B-9953-598C172F6546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA002E48-1E57-413B-9953-598C172F6546}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
