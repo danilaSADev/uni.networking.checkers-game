@@ -44,6 +44,8 @@
         <Compile Include="Converters\UniversalConverter.cs" />
         <Compile Include="Models\ClientCommands.cs" />
         <Compile Include="Models\ClientRequest.cs" />
+        <Compile Include="Models\GameSettings.cs" />
+        <Compile Include="Models\GameType.cs" />
         <Compile Include="Models\ServerInfo.cs" />
         <Compile Include="Models\ServerResponse.cs" />
         <Compile Include="Payloads\Client\EstablishConnectionPayload.cs" />

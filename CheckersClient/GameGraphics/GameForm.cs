@@ -2,8 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CheckersClient
-{
+namespace CheckersClient.GameGraphics {
     public partial class GameForm : Form
     {
         private Board _board;

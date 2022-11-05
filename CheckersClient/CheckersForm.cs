@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using CheckersClient.GameGraphics;
 using CheckersClient.Main;
 
 namespace CheckersClient
@@ -12,7 +13,6 @@ namespace CheckersClient
         {
             _connectionEstablisher = new ConnectionEstablisher();
             InitializeComponent();
-           
         }
 
         private void MainForm_Load(object sender, EventArgs e)

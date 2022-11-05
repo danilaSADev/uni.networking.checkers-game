@@ -1,36 +1,63 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using Domain.Converters;
 using Domain.Models;
+using Domain.Payloads;
+using Newtonsoft.Json;
 
 namespace CheckersClient.Main
 {
     public class ConnectionEstablisher
     {
         private string _identifier;
-        private readonly string _serverAddress;
-        private readonly int _port;
+        private readonly IPEndPoint _ipPoint;
 
         public ConnectionEstablisher()
         {
-            _serverAddress = ServerInfo.IpAddress;
-            _port = ServerInfo.Port;
+            _ipPoint = new IPEndPoint(
+                IPAddress.Parse(ServerInfo.IpAddress), 
+                ServerInfo.Port
+            );
+        }
+        
+        public static int FindFreePort()
+        {
+            int port = 0;
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
+                IPEndPoint localEP = new IPEndPoint(IPAddress.Any, 0);
+                socket.Bind(localEP);
+                localEP = (IPEndPoint)socket.LocalEndPoint;
+                port = localEP.Port;
+            }
+            finally
+            {
+                socket.Close();
+            }
+            return port;
         }
 
-        public void ConnectToServer()
+        public void ConnectToServer(string nickname, string password)
         {
             try
             {
-                IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse(_serverAddress), _port);
-                Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                socket.Connect(ipPoint);
+                Socket socket = ServerInfo.SharedSocket;
+                socket.Connect(_ipPoint);
+                
+                var payload = new EstablishConnectionPayload()
+                {
+                    Username = "danilaSADev",
+                    Password = "1234",
+                    IpAddress = "",
+                    Port = FindFreePort()
+                };
                 
                 var request = new ClientRequest
                 {
                     Command = ClientCommands.ConnectToServer,
-                    Payload = "DanilaSADev"
+                    Payload = JsonConvert.SerializeObject(payload)
                 };
                     
                 byte[] data = UniversalConverter.ConvertObject(request);
@@ -41,8 +68,8 @@ namespace CheckersClient.Main
                 socket.Receive(data, data.Length, 0);
 
                 var response = UniversalConverter.ConvertBytes<ServerResponse>(data);
-                
-                Console.WriteLine("Client identifier: " + response.Payload);
+
+                Console.WriteLine($@"Client identifier: {response.Payload}");
                 _identifier = response.Payload;
                 
                 socket.Shutdown(SocketShutdown.Both);
@@ -58,9 +85,8 @@ namespace CheckersClient.Main
         {
             try
             {
-                IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse(_serverAddress), _port);
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                socket.Connect(ipPoint);
+                socket.Connect(_ipPoint);
                 
                 var request = new ClientRequest
                 {
