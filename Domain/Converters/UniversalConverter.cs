@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Newtonsoft.Json;
 
 namespace Domain.Converters
@@ -10,10 +9,14 @@ namespace Domain.Converters
         {
             return Encoding.Unicode.GetBytes(JsonConvert.SerializeObject(obj));
         }
-        
+
         public static T ConvertBytes<T>(byte[] data)
         {
-            return JsonConvert.DeserializeObject<T>(Encoding.Unicode.GetString(data));
+            var str = Encoding.Unicode.GetString(data).Normalize();
+            var end = str.LastIndexOf("}") + 1;
+            str = str.Remove(end, str.Length - end);
+            var value = JsonConvert.DeserializeObject<T>(str);
+            return value;
         }
     }
 }

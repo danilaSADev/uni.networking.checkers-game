@@ -16,14 +16,12 @@ namespace CheckersClient.Main
 
         public void RetrieveTurnSide()
         {
-            
         }
 
         public void MakeTurn()
         {
             if (_turnSide.Equals(_side))
             {
-                
             }
         }
     }

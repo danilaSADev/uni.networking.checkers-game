@@ -5,13 +5,12 @@ namespace CheckersServer.Services;
 
 public class Lobby
 {
-    private const int MaxPlayers = 2;
-    private GameType _gameType = new();
-
-    private readonly List<Player> _players;
+    private static readonly int MaxPlayers = 2;
     private readonly Player _host;
- 
+    private readonly List<Player> _players;
+
     private GameSettings _settings;
+
     public Lobby(Player host)
     {
         _host = host;
@@ -19,8 +18,9 @@ public class Lobby
         _players.Add(host);
     }
 
-    public void ChangeGameType(GameType type)
+    public void ChangeGameSettings(GameSettings settings)
     {
+        _settings = settings;
     }
 
     public bool ConnectPlayer(Player player)

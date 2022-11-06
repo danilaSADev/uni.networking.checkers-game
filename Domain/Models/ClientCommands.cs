@@ -4,7 +4,7 @@
     {
         public static readonly string ConnectToServer = "CONNECT_TO_SERVER";
         public static readonly string DisconnectFromServer = "DISCONNECT_FROM_SERVER";
-        
+
         public static readonly string CreateLobby = "CREATE_LOBBY";
         public static readonly string StartGame = "START_GAME";
         public static readonly string ConnectToLobby = "CONNECT_TO_LOBBY";

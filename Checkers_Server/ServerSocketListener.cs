@@ -6,16 +6,16 @@ using Domain.Models;
 
 namespace CheckersServer;
 
-public class ServerSocketListener 
+public class ServerSocketListener
 {
-    private readonly bool _isRunning = true;
     private readonly HandlerBinder _binder;
+    private readonly bool _isRunning = true;
 
     public ServerSocketListener(HandlerBinder binder)
     {
         _binder = binder;
     }
-    
+
     public void StartServer()
     {
         var ipPoint = new IPEndPoint(
@@ -33,7 +33,7 @@ public class ServerSocketListener
             {
                 var handler = socket.Accept();
 
-                var data = new byte[256];
+                var data = new byte[1024];
                 handler.Receive(data);
 
                 var request = UniversalConverter.ConvertBytes<ClientRequest>(data);

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CheckersClient.Properties;
 
-namespace CheckersClient.GameGraphics {
+namespace CheckersClient.GameGraphics
+{
     public partial class GameForm : Form
     {
-        private Board _board;
+        private readonly Board _board;
         private Graphics _graphics;
+
         public GameForm()
         {
             _board = new Board();
@@ -27,9 +30,9 @@ namespace CheckersClient.GameGraphics {
 
             foreach (var check in collection)
             {
-                Image img = check.Side.Equals(Side.White) 
-                    ? Properties.Resources.check_white
-                    : Properties.Resources.check_black;
+                Image img = check.Side.Equals(Side.White)
+                    ? Resources.check_white
+                    : Resources.check_black;
 
                 var x = 32 * (check.Position.X + 1);
                 var y = 320 - 32 * (check.Position.Y + 2);
@@ -38,20 +41,21 @@ namespace CheckersClient.GameGraphics {
 
             if (_board.Selected != null)
             {
-                Image img = _board.Selected.Side.Equals(Side.White) 
-                    ? Properties.Resources.check_white
-                    : Properties.Resources.check_black;
+                Image img = _board.Selected.Side.Equals(Side.White)
+                    ? Resources.check_white
+                    : Resources.check_black;
                 var x = 32 * (_board.Selected.Position.X + 1);
                 var y = 320 - 32 * (_board.Selected.Position.Y + 2);
-                
-                _graphics.DrawImage(Properties.Resources.selected, x - 7, y + 2);
+
+                _graphics.DrawImage(Resources.selected, x - 7, y + 2);
                 _graphics.DrawImage(img, x, y);
             }
         }
-        
+
         private void panel1_Paint(object sender, PaintEventArgs e)
-        { }
-        
+        {
+        }
+
         private void panel1_MouseClick(object sender, MouseEventArgs e)
         {
             var mouseX = e.X;
@@ -59,18 +63,18 @@ namespace CheckersClient.GameGraphics {
 
             var panelWidth = panel1.Bounds.Width;
             var panelHeight = panel1.Bounds.Height;
-            
-            if (mouseX > 32 
+
+            if (mouseX > 32
                 && mouseX < panelWidth - 32
                 && mouseY > 32
                 && mouseY < panelHeight - 32)
             {
-                Vector pos = new Vector(
-                    (int)Math.Floor(mouseX / 32.0) - 1, 
+                var pos = new Vector(
+                    (int)Math.Floor(mouseX / 32.0) - 1,
                     8 - (int)Math.Floor(mouseY / 32.0));
-                
+
                 label1.Text = $"{pos.X} {pos.Y}";
-                
+
                 _board.ClickedAt(pos);
                 DrawBoard();
             }

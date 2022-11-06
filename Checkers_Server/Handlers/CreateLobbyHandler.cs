@@ -12,11 +12,9 @@ public class CreateLobbyHandler : ICommandHandler
     {
         _service = service;
     }
-    
+
     public ServerResponse Handle(string payload)
     {
-        
-        
         throw new NotImplementedException();
     }
 }

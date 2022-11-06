@@ -6,11 +6,8 @@ namespace CheckersServer.Services;
 public class MultiplayerService : IMultiplayerService
 {
     private readonly List<Player> _players = new();
-    private List<Lobby> _rooms = new();
+    private readonly List<Lobby> _rooms = new();
 
-    public MultiplayerService()
-    { }
-    
     public void RemovePlayer(string identifier)
     {
         var player = _players.FirstOrDefault(p => p.Identifier == identifier);
@@ -28,8 +25,7 @@ public class MultiplayerService : IMultiplayerService
 
     public void CreateRoom(Player host)
     {
-        Lobby newLobby = new Lobby(host);
+        var newLobby = new Lobby(host);
         _rooms.Add(newLobby);
     }
-   
 }

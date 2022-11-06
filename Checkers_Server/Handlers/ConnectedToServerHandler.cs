@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using CheckersServer.Common;
-using CheckersServer.Models;
+﻿using CheckersServer.Common;
 using CheckersServer.Interfaces;
+using CheckersServer.Models;
 using Domain.Models;
-using Domain.Payloads;
+using Domain.Payloads.Client;
 using Domain.Payloads.Server;
+using Newtonsoft.Json;
 
 namespace CheckersServer.Handlers;
 
@@ -16,18 +16,18 @@ public class ConnectedToServerHandler : ICommandHandler
     {
         _multiplayerService = multiplayerService;
     }
-    
+
     public ServerResponse Handle(string payload)
     {
         Console.WriteLine("Established connection!");
         var deserializedPayload = JsonConvert.DeserializeObject<EstablishConnectionPayload>(payload);
-        
+
         // TODO : check whether player password matches
         // TODO : write data to database        
-        var id = IdentifierGenerator.GenerateIdentifier(payload);
+        var id = IdentifierGenerator.GenerateIdentifier(deserializedPayload.Username);
         var player = new Player
         {
-            Nickname = deserializedPayload.Username, 
+            Nickname = deserializedPayload.Username,
             Identifier = id,
             IpAddress = deserializedPayload.IpAddress,
             Port = deserializedPayload.Port
@@ -35,16 +35,17 @@ public class ConnectedToServerHandler : ICommandHandler
 
         _multiplayerService.AddPlayer(player);
 
-        var responsePayload = new ConnectionEstablishedPayload()
+        var responsePayload = new ConnectionEstablishedPayload
         {
             UserIdentifier = id
         };
-        
+
         var response = new ServerResponse
         {
             Status = "OK",
             Payload = JsonConvert.SerializeObject(responsePayload)
         };
+
         return response;
     }
 }

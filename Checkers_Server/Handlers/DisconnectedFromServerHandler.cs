@@ -15,7 +15,9 @@ public class DisconnectedFromServerHandler : ICommandHandler
     public ServerResponse Handle(string payload)
     {
         Console.WriteLine("Disconnect from server!");
-        _multiplayerService.RemovePlayer(payload);
+        var unpackedPayload = payload;
+
+        _multiplayerService.RemovePlayer(unpackedPayload);
         var response = new ServerResponse
         {
             Status = "OK",

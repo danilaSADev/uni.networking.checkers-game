@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -34,43 +34,54 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Newtonsoft.Json">
-          <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+            <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
         </Reference>
-        <Reference Include="System" />
-        <Reference Include="System.Core" />
-        <Reference Include="System.Xml.Linq" />
-        <Reference Include="System.Data.DataSetExtensions" />
-        <Reference Include="Microsoft.CSharp" />
-        <Reference Include="System.Data" />
-        <Reference Include="System.Deployment" />
-        <Reference Include="System.Drawing" />
-        <Reference Include="System.Net.Http" />
-        <Reference Include="System.Windows.Forms" />
-        <Reference Include="System.Xml" />
+        <Reference Include="System"/>
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Xml.Linq"/>
+        <Reference Include="System.Data.DataSetExtensions"/>
+        <Reference Include="Microsoft.CSharp"/>
+        <Reference Include="System.Data"/>
+        <Reference Include="System.Deployment"/>
+        <Reference Include="System.Drawing"/>
+        <Reference Include="System.Net.Http"/>
+        <Reference Include="System.Windows.Forms"/>
+        <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Board.cs" />
-        <Compile Include="CheckersForm.cs">
+        <Compile Include="Board.cs"/>
+        <Compile Include="ClientActions\AbstractAction.cs"/>
+        <Compile Include="ClientActions\ConnectToServerAction.cs"/>
+        <Compile Include="GamesListForm.cs">
             <SubType>Form</SubType>
         </Compile>
-        <Compile Include="CheckersForm.Designer.cs">
-            <DependentUpon>CheckersForm.cs</DependentUpon>
+        <Compile Include="GamesListForm.Designer.cs">
+            <DependentUpon>GamesListForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="IndexForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="IndexForm.Designer.cs">
+            <DependentUpon>IndexForm.cs</DependentUpon>
         </Compile>
         <Compile Include="GameGraphics\GameForm.cs">
-          <SubType>Form</SubType>
+            <SubType>Form</SubType>
         </Compile>
         <Compile Include="GameGraphics\GameForm.Designer.cs">
-          <DependentUpon>GameForm.cs</DependentUpon>
+            <DependentUpon>GameForm.cs</DependentUpon>
         </Compile>
-        <Compile Include="Main\ConnectionEstablisher.cs" />
-        <Compile Include="Main\GameSession.cs" />
-        <Compile Include="Program.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-        <EmbeddedResource Include="CheckersForm.resx">
-          <DependentUpon>CheckersForm.cs</DependentUpon>
+        <Compile Include="Main\ConnectionEstablisher.cs"/>
+        <Compile Include="Main\GameSession.cs"/>
+        <Compile Include="Program.cs"/>
+        <Compile Include="Properties\AssemblyInfo.cs"/>
+        <EmbeddedResource Include="GamesListForm.resx">
+            <DependentUpon>GamesListForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="IndexForm.resx">
+            <DependentUpon>IndexForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="GameGraphics\GameForm.resx">
-          <DependentUpon>GameForm.cs</DependentUpon>
+            <DependentUpon>GameForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
@@ -92,18 +103,19 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <None Include="App.config" />
+        <None Include="App.config"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Domain\Domain.csproj">
-        <Project>{ba002e48-1e57-413b-9953-598c172f6546}</Project>
-        <Name>Domain</Name>
-      </ProjectReference>
+        <ProjectReference Include="..\Domain\Domain.csproj">
+            <Project>{ba002e48-1e57-413b-9953-598c172f6546}</Project>
+            <Name>Domain</Name>
+        </ProjectReference>
     </ItemGroup>
     <ItemGroup>
-      <Content Include="Resources\button_bg1.png" />
-      <Content Include="Resources\checkers_board1.png" />
-      <Content Include="Resources\selected1.png" />
+        <Content Include="Resources\background1.png"/>
+        <Content Include="Resources\button_bg1.png"/>
+        <Content Include="Resources\checkers_board1.png"/>
+        <Content Include="Resources\selected1.png"/>
     </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>

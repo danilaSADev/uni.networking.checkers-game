@@ -12,12 +12,11 @@ public class Program
         var multiplayerService = new MultiplayerService();
         var listener = new ServerSocketListener(binder);
 
-        listener.StartServer();
-
         binder.Bind(ClientCommands.ConnectToServer, new ConnectedToServerHandler(multiplayerService));
         binder.Bind(ClientCommands.DisconnectFromServer, new DisconnectedFromServerHandler(multiplayerService));
         binder.Bind(ClientCommands.CreateLobby, new CreateLobbyHandler(multiplayerService));
-        
+
+        listener.StartServer();
         return 0;
     }
 }
