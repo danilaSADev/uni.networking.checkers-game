@@ -5,7 +5,7 @@ namespace CheckersServer.Common;
 
 public static class IdentifierGenerator
 {
-    public static string GenerateIdentifier(string nickname, string salt = "")
+    public static string Generate(string nickname, string salt = "")
     {
         var text = nickname + DateTime.Now;
 

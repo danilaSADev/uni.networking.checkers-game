@@ -33,7 +33,7 @@ public class ServerSocketListener
             {
                 var handler = socket.Accept();
 
-                var data = new byte[1024];
+                var data = new byte[65536];
                 handler.Receive(data);
 
                 var request = UniversalConverter.ConvertBytes<ClientRequest>(data);

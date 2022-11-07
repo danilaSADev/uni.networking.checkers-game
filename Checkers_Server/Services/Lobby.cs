@@ -11,13 +11,17 @@ public class Lobby
 
     private GameSettings _settings;
 
+    public int PlayersAmount => _players.Count;
+
     public GameSettings Settings => _settings;
     public string Identifier { get; }
-    public string Name { get;  }
+    public string Name => _settings.RoomName;
     
-    public Lobby(Player host)
+    public Lobby(Player host, string identifier, GameSettings settings)
     {
         _host = host;
+        Identifier = identifier;
+        _settings = settings;
         _players = new List<Player>();
         _players.Add(host);
     }
@@ -36,6 +40,16 @@ public class Lobby
         return true;
     }
 
+    public LobbyInformation GetInformation()
+    {
+        return new LobbyInformation()
+        {
+            IsTournament = _settings.IsTournament,
+            Identifier = this.Identifier,
+            Name = this.Name
+        };
+    }
+    
     public void DisconnectPlayer(Player player)
     {
         if (_players.Contains(player))

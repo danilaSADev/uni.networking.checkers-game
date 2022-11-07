@@ -49,10 +49,16 @@
         <Compile Include="Models\LobbyInformation.cs" />
         <Compile Include="Models\ServerInfo.cs" />
         <Compile Include="Models\ServerResponse.cs" />
+        <Compile Include="Payloads\Client\ConnectToLobbyPayload.cs" />
+        <Compile Include="Payloads\Client\CreateLobbyPayload.cs" />
+        <Compile Include="Payloads\Client\DisconnectFromLobbyPayload.cs" />
         <Compile Include="Payloads\Client\EstablishConnectionPayload.cs" />
         <Compile Include="Payloads\Client\RequestLeaderboardPayload.cs" />
         <Compile Include="Payloads\Client\RequestLobbiesPayload.cs" />
+        <Compile Include="Payloads\Server\ConnectedToLobbyPayload.cs" />
         <Compile Include="Payloads\Server\ConnectionEstablishedPayload.cs" />
+        <Compile Include="Payloads\Server\CreatedLobbyPayload.cs" />
+        <Compile Include="Payloads\Server\DisconnectedFromLobbyPayload.cs" />
         <Compile Include="Payloads\Server\FetchedLeaderboardPayload.cs" />
         <Compile Include="Payloads\Server\FetchedLobbiesPayload.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

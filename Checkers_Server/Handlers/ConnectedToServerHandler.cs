@@ -24,7 +24,7 @@ public class ConnectedToServerHandler : ICommandHandler
 
         // TODO : check whether player password matches
         // TODO : write data to database        
-        var id = IdentifierGenerator.GenerateIdentifier(deserializedPayload.Username);
+        var id = IdentifierGenerator.Generate(deserializedPayload.Username);
         var player = new Player
         {
             Nickname = deserializedPayload.Username,

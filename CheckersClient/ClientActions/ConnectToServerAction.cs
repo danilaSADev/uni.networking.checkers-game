@@ -21,43 +21,13 @@ namespace CheckersClient.ClientActions
 
         public override ServerResponse Request()
         {
-            ServerResponse response = null;
-            try
+            var payload = new EstablishConnectionPayload
             {
-                var socket = ServerInfo.SharedSocket;
-                socket.Connect(_ipPoint);
-
-                var payload = new EstablishConnectionPayload
-                {
-                    Username = _username,
-                    Password = _password,
-                    Port = ConnectionEstablisher.FindFreePort()
-                };
-
-                var request = new ClientRequest
-                {
-                    Command = ClientCommands.ConnectToServer,
-                    Payload = JsonConvert.SerializeObject(payload)
-                };
-
-                var data = UniversalConverter.ConvertObject(request);
-                socket.Send(data);
-
-                data = new byte[256];
-
-                socket.Receive(data, data.Length, 0);
-
-                response = UniversalConverter.ConvertBytes<ServerResponse>(data);
-
-                socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return response;
+                Username = _username,
+                Password = _password,
+                Port = ConnectionEstablisher.FindFreePort()
+            };
+            return ExecuteAction(ClientCommands.ConnectToServer, payload);
         }
     }
 }

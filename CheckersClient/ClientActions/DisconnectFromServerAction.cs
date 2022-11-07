@@ -31,7 +31,7 @@ namespace CheckersClient.ClientActions
                 var data = UniversalConverter.ConvertObject(request);
                 socket.Send(data);
 
-                data = new byte[256];
+                data = new byte[MAX_BYTES];
 
                 socket.Receive(data, data.Length, 0);
 

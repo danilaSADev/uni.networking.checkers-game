@@ -6,34 +6,34 @@ using Newtonsoft.Json;
 
 namespace CheckersServer.Handlers;
 
-public class CreateLobbyHandler : ICommandHandler
+public class DisconnectedFromLobbyHandler : ICommandHandler
 {
     private readonly IMultiplayerService _multiplayerService;
-    
-    public CreateLobbyHandler(IMultiplayerService multiplayerService)
+
+    public DisconnectedFromLobbyHandler(IMultiplayerService multiplayerService)
     {
         _multiplayerService = multiplayerService;
     }
-
+    
     public ServerResponse Handle(string payload)
     {
-        var parsedPayload = JsonConvert.DeserializeObject<CreateLobbyPayload>(payload);
+        var deserializedPayload = JsonConvert.DeserializeObject<DisconnectFromLobbyPayload>(payload);
 
-        if (!_multiplayerService.IsUserValid(parsedPayload.HostIdentifier))
-            return ServerResponse.FailedResponse;
+        var lobbyId = deserializedPayload.LobbyIdentifier;
+        var userId = deserializedPayload.UserIdentifier;
         
-        var lobbyInformation = _multiplayerService.CreateRoom(parsedPayload.HostIdentifier, parsedPayload.Settings);
-        var responsePayload = new CreatedLobbyPayload()
+        _multiplayerService.DisconnectFromRoom(userId, lobbyId);
+
+        var responsePayload = new DisconnectedFromLobbyPayload()
         {
-            Information = lobbyInformation
         };
-        
+
         var response = new ServerResponse
         {
             Status = "OK",
             Payload = JsonConvert.SerializeObject(responsePayload)
         };
-        
+
         return response;
     }
 }

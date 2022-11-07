@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CheckersClient.ClientActions;
 using CheckersClient.Properties;
+using Domain.Models;
+using Domain.Payloads.Client;
+using Domain.Payloads.Server;
+using Newtonsoft.Json;
 
 namespace CheckersClient.GameGraphics
 {
     public partial class GameForm : Form
     {
+        private readonly string _userId;
+        private readonly LobbyInformation _information;
         private readonly Board _board;
         private Graphics _graphics;
 
-        public GameForm()
+        public GameForm(string userId, LobbyInformation information)
         {
+            _userId = userId;
+            _information = information;
             _board = new Board();
             InitializeComponent();
         }
@@ -78,6 +87,20 @@ namespace CheckersClient.GameGraphics
                 _board.ClickedAt(pos);
                 DrawBoard();
             }
+        }
+
+        private void OnLeavingLobby(object sender, FormClosedEventArgs e)
+        {
+            var action = new DisconnectFromLobbyAction(_userId, _information.Identifier);
+            var response = action.Request();
+
+            if (response.Equals(string.Empty))
+            {
+                return;
+            }
+
+            var unpackedResponse = JsonConvert.DeserializeObject<DisconnectedFromLobbyPayload>(response.Payload);
+            
         }
     }
 }

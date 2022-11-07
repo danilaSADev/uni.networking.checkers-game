@@ -92,6 +92,7 @@ namespace CheckersClient.GameGraphics
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "GameForm";
             this.Text = "GameForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnLeavingLobby);
             this.Load += new System.EventHandler(this.GameForm_Load);
             this.ResumeLayout(false);
         }

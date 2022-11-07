@@ -51,7 +51,10 @@
     <ItemGroup>
         <Compile Include="Board.cs" />
         <Compile Include="ClientActions\AbstractAction.cs" />
+        <Compile Include="ClientActions\ConnectToLobbyAction.cs" />
         <Compile Include="ClientActions\ConnectToServerAction.cs" />
+        <Compile Include="ClientActions\CreateLobbyAction.cs" />
+        <Compile Include="ClientActions\DisconnectFromLobbyAction.cs" />
         <Compile Include="ClientActions\DisconnectFromServerAction.cs" />
         <Compile Include="ClientActions\GetLeaderboardAction.cs" />
         <Compile Include="ClientActions\GetLobbiesAction.cs" />
