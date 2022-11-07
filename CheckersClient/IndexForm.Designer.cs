@@ -41,17 +41,18 @@
             this.authorizeButton.BackgroundImage = global::CheckersClient.Properties.Resources.button_bg;
             this.authorizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.authorizeButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.authorizeButton.Location = new System.Drawing.Point(314, 230);
+            this.authorizeButton.Location = new System.Drawing.Point(318, 241);
             this.authorizeButton.Name = "authorizeButton";
             this.authorizeButton.Size = new System.Drawing.Size(146, 28);
             this.authorizeButton.TabIndex = 0;
-            this.authorizeButton.Text = "Enter game";
+            this.authorizeButton.Text = "Увійти в гру";
             this.authorizeButton.UseVisualStyleBackColor = true;
             this.authorizeButton.Click += new System.EventHandler(this.OnAuthorize);
             // 
             // usernameBox
             // 
             this.usernameBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.usernameBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.usernameBox.Location = new System.Drawing.Point(277, 127);
             this.usernameBox.MaxLength = 50;
             this.usernameBox.Multiline = false;
@@ -63,6 +64,7 @@
             // passwordBox
             // 
             this.passwordBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.passwordBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.passwordBox.Location = new System.Drawing.Point(277, 191);
             this.passwordBox.MaxLength = 50;
             this.passwordBox.Multiline = false;
@@ -80,7 +82,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(229, 30);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Your username:";
+            this.label1.Text = "Ваш нікнейм";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label2
@@ -92,7 +94,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(229, 30);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Your password:";
+            this.label2.Text = "Ваш пароль";
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // IndexForm

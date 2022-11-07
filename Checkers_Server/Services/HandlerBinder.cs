@@ -14,16 +14,13 @@ public class HandlerBinder
 
     public ServerResponse Handle(ClientRequest request)
     {
-        var response = new ServerResponse
-        {
-            Status = "UNKNOWN",
-            Payload = string.Empty
-        };
-
+        if (request.Payload.Equals(string.Empty))
+            return ServerResponse.FailedResponse;
+        
         if (_handlers.Keys.Contains(request.Command))
-            response = _handlers[request.Command].Handle(request.Payload);
+            return _handlers[request.Command].Handle(request.Payload);
 
-        return response;
+        return ServerResponse.Unknown;
     }
 
     public void Bind(string command, ICommandHandler handler)

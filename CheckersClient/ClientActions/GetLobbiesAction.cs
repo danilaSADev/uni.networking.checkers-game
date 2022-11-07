@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Sockets;
-using CheckersClient.Main;
 using Domain.Converters;
 using Domain.Models;
 using Domain.Payloads.Client;
@@ -8,17 +7,15 @@ using Newtonsoft.Json;
 
 namespace CheckersClient.ClientActions
 {
-    public class ConnectToServerAction : AbstractAction
+    public class GetLobbiesAction : AbstractAction
     {
-        private readonly string _password;
-        private readonly string _username;
+        private readonly string _identifier;
 
-        public ConnectToServerAction(string username, string password)
+        public GetLobbiesAction(string identifier)
         {
-            _username = username;
-            _password = password;
+            _identifier = identifier;
         }
-
+        
         public override ServerResponse Request()
         {
             ServerResponse response = null;
@@ -27,16 +24,14 @@ namespace CheckersClient.ClientActions
                 var socket = ServerInfo.SharedSocket;
                 socket.Connect(_ipPoint);
 
-                var payload = new EstablishConnectionPayload
+                var payload = new RequestLobbiesPayload()
                 {
-                    Username = _username,
-                    Password = _password,
-                    Port = ConnectionEstablisher.FindFreePort()
+                    UserIdentifier = _identifier
                 };
 
                 var request = new ClientRequest
                 {
-                    Command = ClientCommands.ConnectToServer,
+                    Command = ClientCommands.RetrieveLobbies,
                     Payload = JsonConvert.SerializeObject(payload)
                 };
 

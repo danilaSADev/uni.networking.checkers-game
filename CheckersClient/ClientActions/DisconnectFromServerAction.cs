@@ -1,43 +1,31 @@
 ﻿using System;
 using System.Net.Sockets;
-using CheckersClient.Main;
 using Domain.Converters;
 using Domain.Models;
-using Domain.Payloads.Client;
-using Newtonsoft.Json;
 
 namespace CheckersClient.ClientActions
 {
-    public class ConnectToServerAction : AbstractAction
+    public class DisconnectFromServerAction : AbstractAction
     {
-        private readonly string _password;
-        private readonly string _username;
-
-        public ConnectToServerAction(string username, string password)
+        private readonly string _identifier;
+     
+        public DisconnectFromServerAction(string identifier)
         {
-            _username = username;
-            _password = password;
+            _identifier = identifier;
         }
-
+        
         public override ServerResponse Request()
         {
             ServerResponse response = null;
             try
             {
-                var socket = ServerInfo.SharedSocket;
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(_ipPoint);
-
-                var payload = new EstablishConnectionPayload
-                {
-                    Username = _username,
-                    Password = _password,
-                    Port = ConnectionEstablisher.FindFreePort()
-                };
 
                 var request = new ClientRequest
                 {
-                    Command = ClientCommands.ConnectToServer,
-                    Payload = JsonConvert.SerializeObject(payload)
+                    Command = ClientCommands.DisconnectFromServer,
+                    Payload = _identifier
                 };
 
                 var data = UniversalConverter.ConvertObject(request);
@@ -48,6 +36,8 @@ namespace CheckersClient.ClientActions
                 socket.Receive(data, data.Length, 0);
 
                 response = UniversalConverter.ConvertBytes<ServerResponse>(data);
+                
+                Console.WriteLine("Server response: " + response.Status);
 
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();

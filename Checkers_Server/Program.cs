@@ -15,7 +15,9 @@ public class Program
         binder.Bind(ClientCommands.ConnectToServer, new ConnectedToServerHandler(multiplayerService));
         binder.Bind(ClientCommands.DisconnectFromServer, new DisconnectedFromServerHandler(multiplayerService));
         binder.Bind(ClientCommands.CreateLobby, new CreateLobbyHandler(multiplayerService));
-
+        binder.Bind(ClientCommands.RetrieveLeaderboard, new RetrieveLeaderboardHandler(multiplayerService));
+        binder.Bind(ClientCommands.RetrieveLobbies, new RetrieveLobbiesHandler(multiplayerService));
+        
         listener.StartServer();
         return 0;
     }

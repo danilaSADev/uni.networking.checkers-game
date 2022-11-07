@@ -1,5 +1,6 @@
 ﻿using CheckersServer.Interfaces;
 using CheckersServer.Models;
+using Domain.Models;
 
 namespace CheckersServer.Services;
 
@@ -16,6 +17,33 @@ public class MultiplayerService : IMultiplayerService
             return;
 
         _players.Remove(player);
+    }
+
+    public bool IsUserValid(string identifier)
+    {
+        return _players.FirstOrDefault(p => p.Identifier == identifier) != null;
+    }
+
+    public List<LobbyInformation> GetLobbies()
+    {
+        return _rooms.Select(room => new LobbyInformation()
+        {
+            Name = room.Name,
+            Identifier = room.Identifier,
+            IsTournament = room.Settings.IsTournament
+        }).ToList();
+    }
+
+    public Dictionary<string, int> GetLeaderboard()
+    {
+        Dictionary<string, int> fetchedPlayers = new Dictionary<string, int>();
+        
+        foreach (var player in _players)
+        {
+            fetchedPlayers.Add(player.Nickname, player.Score);
+        }
+
+        return fetchedPlayers;
     }
 
     public void AddPlayer(Player player)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using CheckersClient.ClientActions;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
@@ -32,16 +33,25 @@ namespace CheckersClient
             var connectAction = new ConnectToServerAction(username, password);
             var response = connectAction.Request();
 
+            if (response == null || response.Payload.Equals(string.Empty))
+            {
+                MessageBox.Show("Failed to establish connection", "Error", MessageBoxButtons.OK);
+                return;
+            }
+
             var payload = JsonConvert.DeserializeObject<ConnectionEstablishedPayload>(response.Payload);
-
-            if (payload == null)
-                throw new Exception("Failed to establish connection: payload was null.");
-
+            
             var form = new GamesListForm(payload.UserIdentifier);
+            form.StartPosition = FormStartPosition.Manual;         
+            form.Location = this.Location;
             form.Show();
             Hide();
 
-            form.FormClosed += (o, args) => { Show(); };
+            form.FormClosed += (o, args) =>
+            {
+                this.Location = form.Location;
+                Show();
+            };
         }
     }
 }

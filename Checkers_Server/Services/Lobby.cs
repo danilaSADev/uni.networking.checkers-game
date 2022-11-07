@@ -11,6 +11,10 @@ public class Lobby
 
     private GameSettings _settings;
 
+    public GameSettings Settings => _settings;
+    public string Identifier { get; }
+    public string Name { get;  }
+    
     public Lobby(Player host)
     {
         _host = host;

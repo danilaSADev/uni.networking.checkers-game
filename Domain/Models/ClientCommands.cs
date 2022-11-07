@@ -12,6 +12,7 @@
         public static readonly string MakeTurn = "MAKE_TURN";
         public static readonly string ChangeLobbySettings = "CHANGE_DIFFICULTY";
 
+        public static readonly string RetrieveLobbies = "RETRIEVE_LOBBIES";
         public static readonly string RetrieveLeaderboard = "RETRIEVE_LEADERBOARD";
     }
 }
