@@ -1,43 +1,82 @@
-﻿using CheckersServer.Models;
+﻿using System.Net;
+using System.Net.Sockets;
 using Domain.Models;
+using Domain.Models.Shared;
+using Domain.Payloads.Client;
+using CheckersServer.Models;
+using Domain.Converters;
 
 namespace CheckersServer.Services;
 
 public class Lobby
 {
     private static readonly int MaxPlayers = 2;
-    private readonly Player _host;
     private readonly List<Player> _players;
-
     private GameSettings _settings;
+    private readonly Player _host;
+    private Side TurnSide => (Side)((_turnCounter + (int)_startSide) % 2);
+    private Side _startSide = Side.White;
+    private int _turnCounter = 0;
 
     public int PlayersAmount => _players.Count;
-
-    public GameSettings Settings => _settings;
     public string Identifier { get; }
+    public GameSettings Settings => _settings;
     public string Name => _settings.RoomName;
     
     public Lobby(Player host, string identifier, GameSettings settings)
     {
-        _host = host;
         Identifier = identifier;
         _settings = settings;
         _players = new List<Player>();
-        _players.Add(host);
+        _host = host;
+        ConnectPlayer(host);
     }
 
-    public void ChangeGameSettings(GameSettings settings)
+    public void ChangeGameSettings(GameSettings settings) => _settings = settings;
+    public bool TryMakeTurn(MakeTurnPayload payload)
     {
-        _settings = settings;
+        if (payload.TurnSide.Equals(TurnSide))
+        {
+            // TODO : send changes to another player
+            return true;
+        }
+        return false;
     }
 
-    public bool ConnectPlayer(Player player)
+    private void SendDataToPlayer(Player player)
     {
-        if (_players.Count > MaxPlayers)
-            return false;
+        
+    }
+    
+    private void StartGame()
+    {
+        var rand = new Random();
 
+        var firstSide = (Side)rand.Next(0, 2);
+        var secondSide = (Side)(1 - (int)firstSide);
+        
+        // TODO : for each player create socket
+        // TODO : send information about side and number of games
+    }
+    
+    public void ConnectPlayer(Player player)
+    {
+        if (_players.Count == MaxPlayers)
+            return;
+        
         _players.Add(player);
-        return true;
+        
+        var endpoint = new IPEndPoint(IPAddress.Parse(player.IpAddress), player.Port); 
+        // TODO : test in pair with client
+        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        socket.Bind(endpoint);
+        // var request = new ServerRequest { Payload = "Experimental message"};
+        // socket.Send(UniversalConverter.ConvertObject(request));
+        
+        player.GameSocket = socket;
+
+        if (_players.Count == MaxPlayers)
+            StartGame();
     }
 
     public LobbyInformation GetInformation()
@@ -45,8 +84,9 @@ public class Lobby
         return new LobbyInformation()
         {
             IsTournament = _settings.IsTournament,
-            Identifier = this.Identifier,
-            Name = this.Name
+            TimeToMakeTurn = _settings.TimeOut,
+            Identifier = Identifier,
+            Name = Name
         };
     }
     

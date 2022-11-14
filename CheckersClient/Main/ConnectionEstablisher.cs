@@ -1,20 +1,10 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using Domain.Converters;
-using Domain.Models;
-using Domain.Payloads.Client;
-using Domain.Payloads.Server;
-using Newtonsoft.Json;
 
 namespace CheckersClient.Main
 {
     public class ConnectionEstablisher
     {
-        public ConnectionEstablisher()
-        {
-        }
-
         public static int FindFreePort()
         {
             var port = 0;

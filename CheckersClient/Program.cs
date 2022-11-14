@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Net;
 using System.Windows.Forms;
+using Domain.Models;
 
 namespace CheckersClient
 {
     internal static class Program
     {
         /// <summary>
-        ///     The main entry point for the application.
+        /// The main entry point for the application.
         /// </summary>
         [STAThread]
         private static void Main()

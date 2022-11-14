@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using CheckersClient.Main;
 using Domain.Converters;
@@ -25,6 +26,7 @@ namespace CheckersClient.ClientActions
             {
                 Username = _username,
                 Password = _password,
+                IpAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[1].ToString(),
                 Port = ConnectionEstablisher.FindFreePort()
             };
             return ExecuteAction(ClientCommands.ConnectToServer, payload);

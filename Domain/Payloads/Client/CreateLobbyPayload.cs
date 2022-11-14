@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Models;
+using Domain.Models.Shared;
 
 namespace Domain.Payloads.Client
 {

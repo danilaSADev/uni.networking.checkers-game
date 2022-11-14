@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace Domain.Models
+namespace Domain.Models.Server
 {
     public static class ServerInfo
     {

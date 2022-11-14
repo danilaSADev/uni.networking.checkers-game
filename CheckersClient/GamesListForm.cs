@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using CheckersClient.ClientActions;
 using CheckersClient.GameGraphics;
 using Domain.Models;
+using Domain.Models.Shared;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
 

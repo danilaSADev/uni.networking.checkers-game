@@ -1,4 +1,6 @@
-﻿namespace CheckersServer.Models;
+﻿using System.Net.Sockets;
+
+namespace CheckersServer.Models;
 
 public class Player
 {
@@ -7,4 +9,5 @@ public class Player
     public int Score { get; set; }
     public string Identifier { get; set; }
     public string Nickname { get; set; }
+    public Socket? GameSocket { get; set; }
 }

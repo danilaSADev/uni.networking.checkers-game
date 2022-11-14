@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
+using System.Net.Sockets;
 using System.Windows.Forms;
 using CheckersClient.ClientActions;
+using CheckersClient.Main;
 using CheckersClient.Properties;
 using Domain.Models;
-using Domain.Payloads.Client;
+using Domain.Models.Shared;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
 
@@ -16,11 +19,13 @@ namespace CheckersClient.GameGraphics
         private readonly LobbyInformation _information;
         private readonly Board _board;
         private Graphics _graphics;
+        private GameSession _gameSession;
 
         public GameForm(string userId, LobbyInformation information)
         {
             _userId = userId;
             _information = information;
+            
             _board = new Board();
             InitializeComponent();
         }
@@ -53,14 +58,27 @@ namespace CheckersClient.GameGraphics
                 Image img = _board.Selected.Side.Equals(Side.White)
                     ? Resources.check_white
                     : Resources.check_black;
+                
                 var x = 32 * (_board.Selected.Position.X + 1);
                 var y = 320 - 32 * (_board.Selected.Position.Y + 2);
-
+                
                 _graphics.DrawImage(Resources.selected, x - 7, y + 2);
                 _graphics.DrawImage(img, x, y);
+                
+                var directions = _board.CalculatePossibleDirections();
+                Console.WriteLine(directions.Count());
+                
+                foreach (var direction in directions)
+                {
+                    _graphics.DrawImage(
+                        Resources.possible_move, 
+                        32 * (direction.X + 1),
+                        320 - 32 * (direction.Y + 2));
+                }
             }
         }
-
+        
+        
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
         }

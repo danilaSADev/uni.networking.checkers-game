@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using CheckersServer.Services;
 using Domain.Converters;
 using Domain.Models;
+using Domain.Models.Server;
 
 namespace CheckersServer;
 
@@ -35,9 +36,11 @@ public class ServerSocketListener
 
                 var data = new byte[65536];
                 handler.Receive(data);
-
+                //
+                // Console.WriteLine(handler.RemoteEndPoint.Serialize());
+                
                 var request = UniversalConverter.ConvertBytes<ClientRequest>(data);
-                Console.WriteLine(DateTime.Now.ToShortTimeString() + " : " + request.Payload);
+                // Console.WriteLine(DateTime.Now.ToShortTimeString() + " : " + request.Payload);
 
                 var response = _binder.Handle(request);
                 handler.Send(UniversalConverter.ConvertObject(response));

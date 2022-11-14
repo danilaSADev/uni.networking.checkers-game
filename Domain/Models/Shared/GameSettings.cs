@@ -1,4 +1,4 @@
-﻿namespace Domain.Models
+﻿namespace Domain.Models.Shared
 {
     // TODO : compare with requirements 
     public class GameSettings
@@ -6,11 +6,19 @@
         public string RoomName { get; set; }
         public GameDifficulty Difficulty { get; set; }
         public bool IsTournament { get; set; }
+        public int TimeOut { get; set; } = 30000;
+        
     }
 
     public enum GameDifficulty
     {
         Normal, 
         Hard
+    }
+    
+    public enum Side
+    {
+        Black,
+        White
     }
 }

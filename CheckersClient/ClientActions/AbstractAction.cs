@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using Domain.Converters;
 using Domain.Models;
+using Domain.Models.Server;
 using Newtonsoft.Json;
 
 namespace CheckersClient.ClientActions
@@ -27,8 +28,7 @@ namespace CheckersClient.ClientActions
             {
                 var socket = ServerInfo.SharedSocket;
                 socket.Connect(_ipPoint);
-
-
+                
                 var request = new ClientRequest
                 {
                     Command = command,

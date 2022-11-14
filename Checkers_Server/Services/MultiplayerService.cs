@@ -2,6 +2,7 @@
 using CheckersServer.Interfaces;
 using CheckersServer.Models;
 using Domain.Models;
+using Domain.Models.Shared;
 
 namespace CheckersServer.Services;
 
