@@ -5,6 +5,7 @@ using Domain.Models.Shared;
 using Domain.Payloads.Client;
 using CheckersServer.Models;
 using Domain.Converters;
+using Domain.Models.Server;
 
 namespace CheckersServer.Services;
 
@@ -14,6 +15,7 @@ public class Lobby
     private readonly List<Player> _players;
     private GameSettings _settings;
     private readonly Player _host;
+    private int _rounds = 1;
     private Side TurnSide => (Side)((_turnCounter + (int)_startSide) % 2);
     private Side _startSide = Side.White;
     private int _turnCounter = 0;
@@ -29,12 +31,17 @@ public class Lobby
         _settings = settings;
         _players = new List<Player>();
         _host = host;
+        
+        if (_settings.IsTournament)
+            _rounds = 3;
+        
         ConnectPlayer(host);
     }
 
     public void ChangeGameSettings(GameSettings settings) => _settings = settings;
     public bool TryMakeTurn(MakeTurnPayload payload)
     {
+        // TODO : check identifiers
         if (payload.TurnSide.Equals(TurnSide))
         {
             // TODO : send changes to another player
@@ -66,12 +73,15 @@ public class Lobby
         
         _players.Add(player);
         
+        
         var endpoint = new IPEndPoint(IPAddress.Parse(player.IpAddress), player.Port); 
         // TODO : test in pair with client
         var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        socket.SendTimeout = ServerInfo.MaxClientResponseTime;
+
         socket.Bind(endpoint);
-        // var request = new ServerRequest { Payload = "Experimental message"};
-        // socket.Send(UniversalConverter.ConvertObject(request));
+        var request = new ServerRequest { Payload = "Experimental message"};
+        socket.Send(UniversalConverter.ConvertObject(request));
         
         player.GameSocket = socket;
 
@@ -81,7 +91,7 @@ public class Lobby
 
     public LobbyInformation GetInformation()
     {
-        return new LobbyInformation()
+        return new LobbyInformation
         {
             IsTournament = _settings.IsTournament,
             TimeToMakeTurn = _settings.TimeOut,

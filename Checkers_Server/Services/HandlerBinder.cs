@@ -1,5 +1,6 @@
 ﻿using CheckersServer.Interfaces;
 using Domain.Models;
+using Domain.Models.Server;
 
 namespace CheckersServer.Services;
 

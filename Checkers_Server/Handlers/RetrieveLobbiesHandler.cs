@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using CheckersServer.Interfaces;
 using Domain.Models;
+using Domain.Models.Server;
 using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;

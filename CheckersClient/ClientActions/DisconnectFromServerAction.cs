@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using Domain.Converters;
 using Domain.Models;
+using Domain.Models.Server;
 
 namespace CheckersClient.ClientActions
 {

@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using CheckersClient.ClientActions;
 using Domain.Converters;
 using Domain.Models;
 using Domain.Models.Server;
@@ -12,24 +11,25 @@ namespace CheckersClient.Main
 {
     public class GameSession
     {
-        public static readonly IPEndPoint _endPoint = new IPEndPoint(
+        public static IPEndPoint EndPoint => new IPEndPoint(
             Dns.GetHostEntry(Dns.GetHostName()).AddressList[1],
-            ServerInfo.Port
+            ConnectionEstablisher.FindFreePort()
             );
 
         public Side PlayerSide => _side;
-        
-        private readonly Side _side;
-        private Socket _gameSocket;
+        public bool IsGameRunning => _isRunning;
+
         private readonly GameSettings _settings;
-        private Side _turnSide;
+        private readonly Side _side = Side.White;
+        
+        private Socket _gameSocket;
         private Thread _thread;
+        private Side _turnSide = Side.White;
         
-        private bool _isRunning = true;
+        private bool _isRunning = false;
         
-        public GameSession(Side side, GameSettings settings)
+        public GameSession(GameSettings settings)
         {
-            _side = side;
             _gameSocket = ServerInfo.SharedSocket;
             _settings = settings;
         }
@@ -38,7 +38,7 @@ namespace CheckersClient.Main
         {
             _thread = new Thread(o =>
             {
-                _gameSocket.Bind(_endPoint);
+                _gameSocket.Bind(EndPoint);
                 _gameSocket.Listen(12);
                 try
                 {
@@ -48,12 +48,12 @@ namespace CheckersClient.Main
             
                         var data = new byte[65536];
                         handler.Receive(data);
-                    
                         var request = UniversalConverter.ConvertBytes<ServerRequest>(data);
-                    
-                        // TODO : parse data with request
-                    
                         var response = new ClientResponse();
+                        
+                        // TODO : actions that could happen
+                        // - game is starting
+                        // - 
                         // TODO : check whether player is still connected to the game
                         // handler.Send(UniversalConverter.ConvertObject(response));
             

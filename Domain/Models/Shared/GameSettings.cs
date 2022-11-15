@@ -21,4 +21,9 @@
         Black,
         White
     }
+    public enum TurnType
+    {
+        Movement,
+        Beating
+    }
 }

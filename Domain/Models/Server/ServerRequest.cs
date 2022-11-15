@@ -2,6 +2,7 @@
 {
     public class ServerRequest
     {
-        public object Payload { get; set; }
+        public string Status { get; set; }
+        public string Payload { get; set; }
     }
 }

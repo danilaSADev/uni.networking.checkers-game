@@ -1,6 +1,6 @@
-﻿namespace Domain.Models
-{
-    public class GameType
-    {
-    }
-}
+﻿// namespace Domain.Models.Shared
+// {
+//     public class GameType
+//     {
+//     }
+// }

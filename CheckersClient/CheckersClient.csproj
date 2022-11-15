@@ -50,7 +50,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Board.cs" />
-        <Compile Include="Check.cs" />
+        <Compile Include="Checker.cs" />
         <Compile Include="ClientActions\AbstractAction.cs" />
         <Compile Include="ClientActions\ConnectToLobbyAction.cs" />
         <Compile Include="ClientActions\ConnectToServerAction.cs" />
@@ -124,6 +124,8 @@
         <Content Include="Resources\button_bg1.png" />
         <Content Include="Resources\checkers_board1.png" />
         <Content Include="Resources\possible_move1.png" />
+        <Content Include="Resources\possible_move11.png" />
+        <Content Include="Resources\possible_move21.png" />
         <Content Include="Resources\selected1.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

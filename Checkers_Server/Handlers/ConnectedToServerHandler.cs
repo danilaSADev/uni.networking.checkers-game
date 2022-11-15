@@ -2,6 +2,7 @@
 using CheckersServer.Interfaces;
 using CheckersServer.Models;
 using Domain.Models;
+using Domain.Models.Server;
 using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;

@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Domain.Models.Server;
 using Domain.Payloads.Client;
 
 namespace CheckersClient.ClientActions

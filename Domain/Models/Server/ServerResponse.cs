@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Domain.Models
+namespace Domain.Models.Server
 {
     [Serializable]
     public class ServerResponse

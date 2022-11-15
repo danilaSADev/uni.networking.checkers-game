@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Net.Sockets;
 using System.Windows.Forms;
 using CheckersClient.ClientActions;
 using CheckersClient.Main;
@@ -19,13 +18,12 @@ namespace CheckersClient.GameGraphics
         private readonly LobbyInformation _information;
         private readonly Board _board;
         private Graphics _graphics;
-        private GameSession _gameSession;
 
         public GameForm(string userId, LobbyInformation information)
         {
             _userId = userId;
             _information = information;
-            
+            // TODO : create on game session initialization
             _board = new Board();
             InitializeComponent();
         }
@@ -36,17 +34,29 @@ namespace CheckersClient.GameGraphics
             DrawBoard();
         }
 
+        private Image GetCheckImage(Checker checker)
+        {
+            Image img = checker.Side.Equals(Side.White)
+                ? Resources.check_white
+                : Resources.check_black;
+            
+            if (checker.IsKing)
+            {
+                img = checker.Side == Side.White ? Resources.damka_white : Resources.damka_black;
+            }
+
+            return img;
+        }
+
         private void DrawBoard()
         {
             panel1.Refresh();
             _graphics = panel1.CreateGraphics();
             var collection = _board.GetAllCheckers();
-
+            
             foreach (var check in collection)
             {
-                Image img = check.Side.Equals(Side.White)
-                    ? Resources.check_white
-                    : Resources.check_black;
+                Image img = GetCheckImage(check);
 
                 var x = 32 * (check.Position.X + 1);
                 var y = 320 - 32 * (check.Position.Y + 2);
@@ -55,9 +65,7 @@ namespace CheckersClient.GameGraphics
 
             if (_board.Selected != null)
             {
-                Image img = _board.Selected.Side.Equals(Side.White)
-                    ? Resources.check_white
-                    : Resources.check_black;
+                Image img = GetCheckImage(_board.Selected);
                 
                 var x = 32 * (_board.Selected.Position.X + 1);
                 var y = 320 - 32 * (_board.Selected.Position.Y + 2);
@@ -65,13 +73,13 @@ namespace CheckersClient.GameGraphics
                 _graphics.DrawImage(Resources.selected, x - 7, y + 2);
                 _graphics.DrawImage(img, x, y);
                 
-                var directions = _board.CalculatePossibleDirections();
-                Console.WriteLine(directions.Count());
+                // var directions = _board.CalculatePossibleDirections(_board.Selected);
+                // Console.WriteLine(directions.Count());
                 
-                foreach (var direction in directions)
+                foreach (var direction in _board.Selected.MovementOptions)
                 {
                     _graphics.DrawImage(
-                        Resources.possible_move, 
+                        Resources.possible_move2, 
                         32 * (direction.X + 1),
                         320 - 32 * (direction.Y + 2));
                 }
