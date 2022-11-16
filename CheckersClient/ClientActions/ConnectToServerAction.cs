@@ -6,7 +6,6 @@ using Domain.Converters;
 using Domain.Models;
 using Domain.Models.Server;
 using Domain.Payloads.Client;
-using Newtonsoft.Json;
 
 namespace CheckersClient.ClientActions
 {
@@ -28,7 +27,7 @@ namespace CheckersClient.ClientActions
                 Username = _username,
                 Password = _password,
                 IpAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[1].ToString(),
-                Port = ConnectionEstablisher.FindFreePort()
+                Port = ConnectionEstablisher.Port
             };
             return ExecuteAction(ClientCommands.ConnectToServer, payload);
         }

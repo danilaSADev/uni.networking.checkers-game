@@ -60,6 +60,7 @@
         <Compile Include="ClientActions\GetLeaderboardAction.cs" />
         <Compile Include="ClientActions\GetLobbiesAction.cs" />
         <Compile Include="ClientActions\MakeTurnAction.cs" />
+        <Compile Include="ClientSocketListener.cs" />
         <Compile Include="GamesListForm.cs">
             <SubType>Form</SubType>
         </Compile>

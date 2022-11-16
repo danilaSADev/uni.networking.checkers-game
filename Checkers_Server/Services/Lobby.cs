@@ -72,14 +72,13 @@ public class Lobby
             return;
         
         _players.Add(player);
-        
-        
-        var endpoint = new IPEndPoint(IPAddress.Parse(player.IpAddress), player.Port); 
-        // TODO : test in pair with client
-        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        socket.SendTimeout = ServerInfo.MaxClientResponseTime;
 
-        socket.Bind(endpoint);
+        var endpoint = new IPEndPoint(IPAddress.Parse(player.IpAddress), player.Port);
+        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        
+        socket.SendTimeout = ServerInfo.MaxClientResponseTime;
+        socket.Connect(endpoint);
+        
         var request = new ServerRequest { Payload = "Experimental message"};
         socket.Send(UniversalConverter.ConvertObject(request));
         
@@ -103,6 +102,10 @@ public class Lobby
     public void DisconnectPlayer(Player player)
     {
         if (_players.Contains(player))
+        {
+            player.GameSocket?.Disconnect(false);
+            player.GameSocket?.Dispose();
             _players.Remove(player);
+        }
     }
 }

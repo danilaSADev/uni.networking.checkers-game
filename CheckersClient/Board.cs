@@ -18,7 +18,6 @@ namespace CheckersClient
             _directions.Add(new Vector(-1,1));
             // TODO : replace with side retrieved from the server
             _gameSession = new GameSession( new GameSettings());
-            _gameSession.StartListeningToServer();
             _checkers = new List<Checker>();
         }
 

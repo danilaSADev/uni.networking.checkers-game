@@ -18,9 +18,11 @@ namespace CheckersClient
 
         private readonly BindingSource _leaderboardDataSource;
         private readonly BindingSource _lobbiesDataSource;
-
+        private readonly ClientSocketListener _clientSocketListener;
+        
         public GamesListForm(string userIdentifier)
         {
+            _clientSocketListener = new ClientSocketListener();
             _leaderboardDataSource = new BindingSource();
             _lobbiesDataSource = new BindingSource();
             _userIdentifier = userIdentifier;
@@ -54,14 +56,14 @@ namespace CheckersClient
         private void OnCreateLobby(object sender, EventArgs e)
         {
             var action = new CreateLobbyAction(_userIdentifier, GenerateGameSettings());
-            
             var response = action.Request();
 
-            if (response.Status.Equals("FAILED") || response.Payload.Equals(string.Empty))
+            if (response == null || response.Status.Equals("FAILED") || response.Payload.Equals(string.Empty))
             {
                 // TODO : dialog on payload is empty 
                 return;
             }
+
 
             var unpackedPayload = JsonConvert.DeserializeObject<CreatedLobbyPayload>(response.Payload);
             
@@ -70,6 +72,7 @@ namespace CheckersClient
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
+            _clientSocketListener.StopListeningToServer();
             var action = new DisconnectFromServerAction(_userIdentifier);
             action.Request();
         }
@@ -125,6 +128,8 @@ namespace CheckersClient
             leaderboard.DataSource = _leaderboardDataSource;
             roomsList.DataSource = _lobbiesDataSource;
             difficultyComboBox.DataSource = Enum.GetValues(typeof(GameDifficulty));
+            // starting listening to server
+            _clientSocketListener.StartListeningToServer();
         }
 
         private void OnRoomSelection(object sender, DataGridViewCellEventArgs e)

@@ -13,7 +13,7 @@ namespace CheckersClient.Main
     {
         public static IPEndPoint EndPoint => new IPEndPoint(
             Dns.GetHostEntry(Dns.GetHostName()).AddressList[1],
-            ConnectionEstablisher.FindFreePort()
+            ConnectionEstablisher.Port
             );
 
         public Side PlayerSide => _side;
@@ -22,7 +22,6 @@ namespace CheckersClient.Main
         private readonly GameSettings _settings;
         private readonly Side _side = Side.White;
         
-        private Socket _gameSocket;
         private Thread _thread;
         private Side _turnSide = Side.White;
         
@@ -30,45 +29,10 @@ namespace CheckersClient.Main
         
         public GameSession(GameSettings settings)
         {
-            _gameSocket = ServerInfo.SharedSocket;
             _settings = settings;
         }
 
-        public void StartListeningToServer()
-        {
-            _thread = new Thread(o =>
-            {
-                _gameSocket.Bind(EndPoint);
-                _gameSocket.Listen(12);
-                try
-                {
-                    while (_isRunning)
-                    {
-                        var handler = _gameSocket.Accept();
-            
-                        var data = new byte[65536];
-                        handler.Receive(data);
-                        var request = UniversalConverter.ConvertBytes<ServerRequest>(data);
-                        var response = new ClientResponse();
-                        
-                        // TODO : actions that could happen
-                        // - game is starting
-                        // - 
-                        // TODO : check whether player is still connected to the game
-                        // handler.Send(UniversalConverter.ConvertObject(response));
-            
-                        handler.Shutdown(SocketShutdown.Both);
-                        handler.Close();
-                    }
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine(exception);
-                }
-            });
-            _thread.Start();
-        }
-
+        
         public void StopListeningToServer()
         {
             _thread.Interrupt();

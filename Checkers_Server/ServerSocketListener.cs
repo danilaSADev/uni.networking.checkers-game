@@ -20,7 +20,7 @@ public class ServerSocketListener
     public void StartServer()
     {
         var ipPoint = new IPEndPoint(
-            IPAddress.Parse(ServerInfo.IpAddress),
+            IPAddress.Parse("192.168.0.101"), 
             ServerInfo.Port
         );
 
@@ -30,17 +30,18 @@ public class ServerSocketListener
             socket.Bind(ipPoint);
             socket.Listen(12);
 
+            Console.WriteLine($"Server now listens on : {(socket.LocalEndPoint as IPEndPoint)?.Address}" );
+            
             while (_isRunning)
             {
                 var handler = socket.Accept();
 
                 var data = new byte[65536];
                 handler.Receive(data);
-                //
-                // Console.WriteLine(handler.RemoteEndPoint.Serialize());
+                Console.WriteLine($"Client connected from : {(handler.RemoteEndPoint as IPEndPoint)?.Address}" );
                 
                 var request = UniversalConverter.ConvertBytes<ClientRequest>(data);
-                // Console.WriteLine(DateTime.Now.ToShortTimeString() + " : " + request.Payload);
+                Console.WriteLine(DateTime.Now.ToShortTimeString() + " : " + request.Payload);
 
                 var response = _binder.Handle(request);
                 handler.Send(UniversalConverter.ConvertObject(response));

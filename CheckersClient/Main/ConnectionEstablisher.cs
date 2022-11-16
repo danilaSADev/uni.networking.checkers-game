@@ -5,7 +5,9 @@ namespace CheckersClient.Main
 {
     public class ConnectionEstablisher
     {
-        public static int FindFreePort()
+        public static readonly int Port = FindFreePort();
+        
+        private static int FindFreePort()
         {
             var port = 0;
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
