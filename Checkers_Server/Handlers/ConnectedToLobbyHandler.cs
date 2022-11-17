@@ -18,7 +18,7 @@ public class ConnectedToLobbyHandler : ICommandHandler
         _multiplayerService = multiplayerService;
     }
     
-    public ServerResponse Handle(string payload)
+    public Response Handle(string payload)
     {
         var deserializedPayload = JsonConvert.DeserializeObject<ConnectToLobbyPayload>(payload);
 
@@ -32,7 +32,7 @@ public class ConnectedToLobbyHandler : ICommandHandler
             Information = roomInformation
         };
 
-        var response = new ServerResponse
+        var response = new Response
         {
             Status = "OK",
             Payload = JsonConvert.SerializeObject(responsePayload)

@@ -2,11 +2,14 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using CheckersClient.Actions;
 using CheckersClient.ClientActions;
 using CheckersClient.Main;
 using CheckersClient.Properties;
 using Domain.Models;
+using Domain.Models.Server;
 using Domain.Models.Shared;
+using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
 
@@ -16,22 +19,47 @@ namespace CheckersClient.GameGraphics
     {
         private readonly string _userId;
         private readonly LobbyInformation _information;
+        private readonly ClientSocketListener _listener;
         private readonly Board _board;
+        private readonly GameSession _session;
         private Graphics _graphics;
 
-        public GameForm(string userId, LobbyInformation information)
+        public GameForm(string userId, LobbyInformation information, ClientSocketListener listener)
         {
             _userId = userId;
             _information = information;
-            // TODO : create on game session initialization
-            _board = new Board();
+            _listener = listener;
+            _session = new GameSession(userId, new GameSettings());
+            _board = new Board(_session);
             InitializeComponent();
         }
-
+        
         private void GameForm_Load(object sender, EventArgs e)
         {
+            _listener.OnServerMessageRecieved += OnServerMessage_StartGame;
+            _listener.OnServerMessageRecieved += OnServerMessage_MakeTurn;
             _board.InitializeBoard();
             DrawBoard();
+        }
+        
+        public void OnServerMessage_StartGame(string command, string message)
+        {
+            if (!command.Equals(ServerCommands.GameStarted))
+                return;
+
+            var unpackedPayload = JsonConvert.DeserializeObject<GameStartedPayload>(message);
+            _session.StartGame(unpackedPayload);
+            label2.Text = "Game is running!";
+        }
+
+        private void OnServerMessage_MakeTurn(string command, string message)
+        {
+            if (!command.Equals(ServerCommands.MakeTurn))
+                return;
+
+            var unpackedPayload = JsonConvert.DeserializeObject<MakeTurnPayload>(message);
+            _board.MakeOpponentTurn(unpackedPayload);
+            
         }
 
         private Image GetCheckImage(Checker checker)
@@ -72,10 +100,7 @@ namespace CheckersClient.GameGraphics
                 
                 _graphics.DrawImage(Resources.selected, x - 7, y + 2);
                 _graphics.DrawImage(img, x, y);
-                
-                // var directions = _board.CalculatePossibleDirections(_board.Selected);
-                // Console.WriteLine(directions.Count());
-                
+
                 foreach (var direction in _board.Selected.MovementOptions)
                 {
                     _graphics.DrawImage(
@@ -118,15 +143,7 @@ namespace CheckersClient.GameGraphics
         private void OnLeavingLobby(object sender, FormClosedEventArgs e)
         {
             var action = new DisconnectFromLobbyAction(_userId, _information.Identifier);
-            var response = action.Request();
-
-            if (response.Equals(string.Empty))
-            {
-                return;
-            }
-
-            var unpackedResponse = JsonConvert.DeserializeObject<DisconnectedFromLobbyPayload>(response.Payload);
-            
+            action.Request();
         }
     }
 }

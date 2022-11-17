@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using CheckersClient.Actions;
+using Domain.Models;
 using Domain.Models.Server;
 using Domain.Models.Shared;
 using Domain.Payloads.Client;
@@ -12,23 +13,30 @@ namespace CheckersClient.ClientActions
         private readonly Vector _fromPosition;
         private readonly Vector _toPosition;
         private readonly Side _side;
+        private bool _finishedTurn;
+        private readonly TurnType _type;
 
-        public MakeTurnAction(string userId, string lobbyId, Vector fromPosition, Vector toPosition, Side side)
+        public MakeTurnAction(TurnInformation info)
         {
-            _userId = userId;
-            _lobbyId = lobbyId;
-            _fromPosition = fromPosition;
-            _toPosition = toPosition;
-            _side = side;
+            _userId = info.UserId;
+            _lobbyId = info.LobbyId;
+            _fromPosition = info.FromPosition;
+            _toPosition = info.ToPosition;
+            _side = info.TurnSide;
+            _finishedTurn = info.FinishedTurn;
+            _type = info.Type;
         }
         
-        public override ServerResponse Request()
+        public override Response Request()
         {
             var payload = new MakeTurnPayload
             {
+                LobbyId = _lobbyId,
+                UserId = _userId,
                 FromPosition = _fromPosition,
                 ToPosition = _toPosition,
-                TurnSide = _side
+                TurnSide = _side,
+                FinishedTurn = _finishedTurn
             };
             return ExecuteAction(ClientCommands.MakeTurn, payload);
         }

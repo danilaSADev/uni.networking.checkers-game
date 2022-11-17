@@ -1,8 +1,6 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
+﻿using System.Net;
+using CheckersClient.Actions;
 using CheckersClient.Main;
-using Domain.Converters;
 using Domain.Models;
 using Domain.Models.Server;
 using Domain.Payloads.Client;
@@ -20,7 +18,7 @@ namespace CheckersClient.ClientActions
             _password = password;
         }
 
-        public override ServerResponse Request()
+        public override Response Request()
         {
             var payload = new EstablishConnectionPayload
             {

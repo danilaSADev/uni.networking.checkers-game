@@ -1,4 +1,6 @@
-﻿using CheckersServer.Common;
+﻿using System.Net;
+using System.Net.Sockets;
+using CheckersServer.Common;
 using CheckersServer.Interfaces;
 using CheckersServer.Models;
 using Domain.Models;
@@ -18,7 +20,7 @@ public class ConnectedToServerHandler : ICommandHandler
         _multiplayerService = multiplayerService;
     }
 
-    public ServerResponse Handle(string payload)
+    public Response Handle(string payload)
     {
         Console.WriteLine("Established connection!");
         var deserializedPayload = JsonConvert.DeserializeObject<EstablishConnectionPayload>(payload);
@@ -26,12 +28,19 @@ public class ConnectedToServerHandler : ICommandHandler
         // TODO : check whether player password matches
         // TODO : write data to database        
         var id = IdentifierGenerator.Generate(deserializedPayload.Username);
+                
+        // Initializing player socket
+        var endpoint = new IPEndPoint(IPAddress.Parse(deserializedPayload.IpAddress), deserializedPayload.Port);
+        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        
+        socket.SendTimeout = ServerInfo.MaxClientResponseTime;
+        socket.Connect(endpoint);
+        
         var player = new Player
         {
             Nickname = deserializedPayload.Username,
             Identifier = id,
-            IpAddress = deserializedPayload.IpAddress,
-            Port = deserializedPayload.Port
+            GameSocket = socket
         };
 
         _multiplayerService.AddPlayer(player);
@@ -41,7 +50,7 @@ public class ConnectedToServerHandler : ICommandHandler
             UserIdentifier = id
         };
 
-        var response = new ServerResponse
+        var response = new Response
         {
             Status = "OK",
             Payload = JsonConvert.SerializeObject(responsePayload)

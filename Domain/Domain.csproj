@@ -44,14 +44,14 @@
     <ItemGroup>
         <Compile Include="Converters\UniversalConverter.cs" />
         <Compile Include="Models\Client\ClientCommands.cs" />
-        <Compile Include="Models\Client\ClientRequest.cs" />
-        <Compile Include="Models\Client\ClientResponse.cs" />
+        <Compile Include="Models\Server\ServerCommands.cs" />
         <Compile Include="Models\Server\ServerInfo.cs" />
         <Compile Include="Models\Server\ServerRequest.cs" />
-        <Compile Include="Models\Server\ServerResponse.cs" />
         <Compile Include="Models\Shared\GameSettings.cs" />
         <Compile Include="Models\Shared\GameType.cs" />
         <Compile Include="Models\Shared\LobbyInformation.cs" />
+        <Compile Include="Models\Shared\Request.cs" />
+        <Compile Include="Models\Shared\Response.cs" />
         <Compile Include="Models\Shared\Vector.cs" />
         <Compile Include="Payloads\Client\ConnectToLobbyPayload.cs" />
         <Compile Include="Payloads\Client\CreateLobbyPayload.cs" />
@@ -67,10 +67,14 @@
         <Compile Include="Payloads\Server\DisconnectedFromLobbyPayload.cs" />
         <Compile Include="Payloads\Server\FetchedLeaderboardPayload.cs" />
         <Compile Include="Payloads\Server\FetchedLobbiesPayload.cs" />
+        <Compile Include="Payloads\Server\GameStartedPayload.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
         <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Networking\Actions" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

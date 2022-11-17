@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using CheckersClient.ClientActions;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
@@ -9,17 +8,22 @@ namespace CheckersClient
 {
     public partial class IndexForm : Form
     {
+        private ClientSocketListener _clientSocketListener;
+
         public IndexForm()
         {
+            _clientSocketListener = new ClientSocketListener();
             InitializeComponent();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            _clientSocketListener.TryStartListeningToServer();
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            _clientSocketListener.StopListeningToServer();
         }
 
         private void OnAuthorize(object sender, EventArgs e)
@@ -41,7 +45,7 @@ namespace CheckersClient
 
             var payload = JsonConvert.DeserializeObject<ConnectionEstablishedPayload>(response.Payload);
             
-            var form = new GamesListForm(payload.UserIdentifier);
+            var form = new GamesListForm( _clientSocketListener, payload.UserIdentifier);
             form.StartPosition = FormStartPosition.Manual;         
             form.Location = this.Location;
             form.Show();

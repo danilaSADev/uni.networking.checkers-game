@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Domain.Models.Shared;
 using CheckersClient.Main;
+using Domain.Payloads.Client;
 
 namespace CheckersClient
 {
@@ -12,15 +13,15 @@ namespace CheckersClient
         private List<Vector> _directions = new List<Vector>();
         private readonly GameSession _gameSession;
 
-        public Board()
+        public Board(GameSession gameSession)
         {
             _directions.Add(new Vector(1,1));
             _directions.Add(new Vector(-1,1));
             // TODO : replace with side retrieved from the server
-            _gameSession = new GameSession( new GameSettings());
+            _gameSession = gameSession;
             _checkers = new List<Checker>();
         }
-
+        
         public Checker Selected { get; private set; }
 
         public void InitializeBoard()
@@ -39,6 +40,7 @@ namespace CheckersClient
                     _checkers.Add(check);
                 }
         }
+        
 
         private Checker CastRay(Vector startPosition, Vector direction, int distance)
         {
@@ -60,6 +62,12 @@ namespace CheckersClient
         private bool AnyObstacle(Vector position)
         {
             return _checkers.FirstOrDefault(c => c.Position.Equals(position)) != null;
+        }
+        
+        
+        public void MakeOpponentTurn(MakeTurnPayload payload)
+        {
+            
         }
 
         public void CalculateAllPossibleDirections()

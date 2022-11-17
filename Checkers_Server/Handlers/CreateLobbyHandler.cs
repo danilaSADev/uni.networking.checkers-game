@@ -16,12 +16,12 @@ public class CreateLobbyHandler : ICommandHandler
         _multiplayerService = multiplayerService;
     }
 
-    public ServerResponse Handle(string payload)
+    public Response Handle(string payload)
     {
         var parsedPayload = JsonConvert.DeserializeObject<CreateLobbyPayload>(payload);
 
         if (!_multiplayerService.IsUserValid(parsedPayload.HostIdentifier))
-            return ServerResponse.FailedResponse;
+            return Response.FailedResponse;
         
         var lobbyInformation = _multiplayerService.CreateRoom(parsedPayload.HostIdentifier, parsedPayload.Settings);
         var responsePayload = new CreatedLobbyPayload()
@@ -29,7 +29,7 @@ public class CreateLobbyHandler : ICommandHandler
             Information = lobbyInformation
         };
         
-        var response = new ServerResponse
+        var response = new Response
         {
             Status = "OK",
             Payload = JsonConvert.SerializeObject(responsePayload)

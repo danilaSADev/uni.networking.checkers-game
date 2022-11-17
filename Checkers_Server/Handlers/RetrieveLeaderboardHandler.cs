@@ -18,19 +18,19 @@ public class RetrieveLeaderboardHandler : ICommandHandler
         _service = service;
     }
 
-    public ServerResponse Handle(string payload)
+    public Response Handle(string payload)
     {
         var unpackedPayload = JsonConvert.DeserializeObject<RequestLeaderboardPayload>(payload);
 
         if (!_service.IsUserValid(unpackedPayload.UserIdentifier))
-            return ServerResponse.FailedResponse;
+            return Response.FailedResponse;
 
         var responsePayload = new FetchedLeaderboardPayload()
         {
             Leaderboard = _service.GetLeaderboard()
         };
 
-        var response = new ServerResponse
+        var response = new Response
         {
             Status = "OK",
             Payload = JsonConvert.SerializeObject(responsePayload)

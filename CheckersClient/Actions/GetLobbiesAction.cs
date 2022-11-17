@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using CheckersClient.Actions;
 using Domain.Converters;
 using Domain.Models;
 using Domain.Models.Server;
@@ -8,22 +9,22 @@ using Newtonsoft.Json;
 
 namespace CheckersClient.ClientActions
 {
-    public class GetLeaderboardAction : AbstractAction
+    public class GetLobbiesAction : AbstractAction
     {
         private readonly string _identifier;
 
-        public GetLeaderboardAction(string identifier)
+        public GetLobbiesAction(string identifier)
         {
             _identifier = identifier;
         }
         
-        public override ServerResponse Request()
+        public override Response Request()
         {
-            var payload = new RequestLeaderboardPayload
+            var payload = new RequestLobbiesPayload()
             {
                 UserIdentifier = _identifier
             };
-            return ExecuteAction(ClientCommands.RetrieveLeaderboard, payload);
+            return ExecuteAction(ClientCommands.RetrieveLobbies, payload);
         }
     }
 }

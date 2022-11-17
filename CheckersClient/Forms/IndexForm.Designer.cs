@@ -29,6 +29,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IndexForm));
             this.authorizeButton = new System.Windows.Forms.Button();
             this.usernameBox = new System.Windows.Forms.RichTextBox();
             this.passwordBox = new System.Windows.Forms.RichTextBox();
@@ -109,6 +110,7 @@
             this.Controls.Add(this.usernameBox);
             this.Controls.Add(this.authorizeButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "IndexForm";
             this.Text = "Authorization ";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);

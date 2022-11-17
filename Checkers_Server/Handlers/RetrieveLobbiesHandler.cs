@@ -17,19 +17,19 @@ public class RetrieveLobbiesHandler : ICommandHandler
         _multiplayerService = multiplayerService;
     }
 
-    public ServerResponse Handle(string payload)
+    public Response Handle(string payload)
     {
         var unpackedPayload = JsonConvert.DeserializeObject<RequestLobbiesPayload>(payload);
 
         if (!_multiplayerService.IsUserValid(unpackedPayload.UserIdentifier))
-            return ServerResponse.FailedResponse;
+            return Response.FailedResponse;
 
         var responsePayload = new FetchedLobbiesPayload()
         {
             Lobbies = _multiplayerService.GetLobbies()
         };
 
-        var response = new ServerResponse
+        var response = new Response
         {
             Status = "OK",
             Payload = JsonConvert.SerializeObject(responsePayload)

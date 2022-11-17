@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using CheckersClient.Actions;
 using Domain.Converters;
 using Domain.Models;
 using Domain.Models.Server;
@@ -15,15 +16,15 @@ namespace CheckersClient.ClientActions
             _identifier = identifier;
         }
         
-        public override ServerResponse Request()
+        public override Response Request()
         {
-            ServerResponse response = null;
+            Response response = null;
             try
             {
                 var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(_ipPoint);
 
-                var request = new ClientRequest
+                var request = new Request
                 {
                     Command = ClientCommands.DisconnectFromServer,
                     Payload = _identifier
@@ -36,7 +37,7 @@ namespace CheckersClient.ClientActions
 
                 socket.Receive(data, data.Length, 0);
 
-                response = UniversalConverter.ConvertBytes<ServerResponse>(data);
+                response = UniversalConverter.ConvertBytes<Response>(data);
                 
                 Console.WriteLine("Server response: " + response.Status);
 

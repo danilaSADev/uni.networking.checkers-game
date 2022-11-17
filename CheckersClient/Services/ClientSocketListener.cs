@@ -9,12 +9,16 @@ using Domain.Models.Server;
 
 namespace CheckersClient
 {
+    public delegate void ServerMessageHandler(string command, string message);
     public class ClientSocketListener
     {
         private Thread _thread;
         private Socket _gameSocket;
         private bool _isListeningToServer = false;
+        public bool IsLive => _isListeningToServer;
 
+        public event ServerMessageHandler OnServerMessageRecieved;
+        
         public ClientSocketListener()
         {
             _gameSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -22,35 +26,37 @@ namespace CheckersClient
 
         public void StopListeningToServer()
         {
-            _thread.Interrupt();
+            _thread.Abort();
             _isListeningToServer = false;
         }
         
-        public void StartListeningToServer()
+        public void TryStartListeningToServer()
         {
             if (_isListeningToServer)
                 return;
 
             _isListeningToServer = true;
             
-            _thread = new Thread(o =>
+            _thread = new Thread(async o =>
             {
                 _gameSocket.Bind(GameSession.EndPoint);
                 _gameSocket.Listen(12);
                 try
                 {
-                    Console.WriteLine($"Client is listening to server on: {GameSession.EndPoint.Address}:{GameSession.EndPoint.Port}");
+                    Console.WriteLine($"Client is now listening on: {GameSession.EndPoint.Address}:{GameSession.EndPoint.Port}");
                     while (true)
                     {
-                        var handler = _gameSocket.Accept();
+                        var handler = await _gameSocket.AcceptAsync();
             
                         var data = new byte[65536];
                         handler.Receive(data);
-                        var request = UniversalConverter.ConvertBytes<ServerRequest>(data);
+                        
+                        var request = UniversalConverter.ConvertBytes<Request>(data);
 
                         Console.WriteLine($"Message from server: {request.Payload}");
-                        var response = new ClientResponse();
-                        
+                        if (OnServerMessageRecieved != null)
+                            OnServerMessageRecieved.Invoke(request.Command, request.Payload);
+
                         // TODO : actions that could happen
                         // - game is starting
                         // -

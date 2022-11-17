@@ -31,6 +31,7 @@ namespace CheckersClient
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GamesListForm));
             this.roomsList = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -57,7 +58,7 @@ namespace CheckersClient
             this.roomsList.Name = "roomsList";
             this.roomsList.Size = new System.Drawing.Size(325, 362);
             this.roomsList.TabIndex = 0;
-            this.roomsList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnRoomSelection);
+            this.roomsList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SelectRoom);
             // 
             // label1
             // 
@@ -142,7 +143,7 @@ namespace CheckersClient
             this.connectToGameButton.TabIndex = 9;
             this.connectToGameButton.Text = "Приєднатись до гри";
             this.connectToGameButton.UseVisualStyleBackColor = false;
-            this.connectToGameButton.Click += new System.EventHandler(this.OnConnectToGame);
+            this.connectToGameButton.Click += new System.EventHandler(this.ConnectToGame);
             // 
             // refreshLobbyButton
             // 
@@ -156,7 +157,7 @@ namespace CheckersClient
             this.refreshLobbyButton.TabIndex = 10;
             this.refreshLobbyButton.Text = "⟲";
             this.refreshLobbyButton.UseVisualStyleBackColor = false;
-            this.refreshLobbyButton.Click += new System.EventHandler(this.OnRefreshLobbies);
+            this.refreshLobbyButton.Click += new System.EventHandler(this.RefreshLobbies);
             // 
             // button2
             // 
@@ -170,7 +171,7 @@ namespace CheckersClient
             this.button2.TabIndex = 12;
             this.button2.Text = "⟲";
             this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.OnRefreshLeaderboard);
+            this.button2.Click += new System.EventHandler(this.RefreshLeaderboard);
             // 
             // difficultyComboBox
             // 
@@ -231,6 +232,7 @@ namespace CheckersClient
             this.Controls.Add(this.leaderboard);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.roomsList);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GamesListForm";
             this.Text = "GamesForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);

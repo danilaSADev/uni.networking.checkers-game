@@ -2,10 +2,13 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using CheckersClient.ClientActions;
 using Domain.Converters;
 using Domain.Models;
 using Domain.Models.Server;
 using Domain.Models.Shared;
+using Domain.Payloads.Client;
+using Domain.Payloads.Server;
 
 namespace CheckersClient.Main
 {
@@ -16,34 +19,44 @@ namespace CheckersClient.Main
             ConnectionEstablisher.Port
             );
 
-        public Side PlayerSide => _side;
+        public Side PlayerSide => _playerSide;
         public bool IsGameRunning => _isRunning;
-
+        private readonly string _usedId;
         private readonly GameSettings _settings;
-        private readonly Side _side = Side.White;
         
-        private Thread _thread;
+        private Side _playerSide;
+        private Side _opponentSide; 
+        
         private Side _turnSide = Side.White;
-        
         private bool _isRunning = false;
+
+        private GameStats _gameStats;
         
-        public GameSession(GameSettings settings)
+        public GameSession(string usedId, GameSettings settings)
         {
+            _usedId = usedId;
             _settings = settings;
         }
 
-        
-        public void StopListeningToServer()
+        public void MakeTurn(TurnInformation turnInfo)
         {
-            _thread.Interrupt();
+            if (_turnSide.Equals(_playerSide))
+            {
+                var action = new MakeTurnAction(turnInfo);
+                
+                // TODO : run action
+            }
         }
 
-        public void MakeTurn()
+        private void StartTimer()
         {
-            if (_turnSide.Equals(_side))
-            {
-                // var action = new MakeTurnAction();
-            }
+            
+        }
+
+        public void StartGame(GameStartedPayload payload)
+        {
+            _playerSide = payload.PlayerSide;
+            _opponentSide = (Side)(((int)_playerSide + 1) % 2);
         }
     }
 }

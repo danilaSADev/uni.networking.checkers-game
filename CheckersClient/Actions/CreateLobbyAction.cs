@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using CheckersClient.Actions;
 using CheckersClient.Main;
 using Domain.Converters;
 using Domain.Models;
@@ -21,7 +22,7 @@ namespace CheckersClient.ClientActions
             _settings = settings;
         }
         
-        public override ServerResponse Request()
+        public override Response Request()
         {
             var payload = new CreateLobbyPayload
             {

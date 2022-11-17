@@ -13,15 +13,15 @@ public class HandlerBinder
         _handlers = new Dictionary<string, ICommandHandler>();
     }
 
-    public ServerResponse Handle(ClientRequest request)
+    public Response Handle(Request request)
     {
         if (request.Payload.Equals(string.Empty))
-            return ServerResponse.FailedResponse;
+            return Response.FailedResponse;
         
         if (_handlers.Keys.Contains(request.Command))
             return _handlers[request.Command].Handle(request.Payload);
 
-        return ServerResponse.Unknown;
+        return Response.Unknown;
     }
 
     public void Bind(string command, ICommandHandler handler)

@@ -5,5 +5,5 @@ namespace CheckersServer.Interfaces;
 
 public interface ICommandHandler
 {
-    ServerResponse Handle(string payload);
+    Response Handle(string payload);
 }

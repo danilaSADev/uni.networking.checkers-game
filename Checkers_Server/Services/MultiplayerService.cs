@@ -2,6 +2,7 @@
 using CheckersServer.Interfaces;
 using CheckersServer.Models;
 using Domain.Models;
+using Domain.Models.Server;
 using Domain.Models.Shared;
 
 namespace CheckersServer.Services;
@@ -17,14 +18,15 @@ public class MultiplayerService : IMultiplayerService
 
         if (player == null)
             return;
-
+        
+        player.Dispose();
         _players.Remove(player);
+        NotifyAll(ServerCommands.LeaderboardUpdated, "Leaderboard is updated!");
     }
 
     public LobbyInformation GetLobbyInformation(string lobbyIdentifier)
     {
         var lobby = _rooms.First(l => l.Identifier.Equals(lobbyIdentifier));
-        // TODO : check for null or throw exception
         return lobby.GetInformation();
     }
 
@@ -55,8 +57,17 @@ public class MultiplayerService : IMultiplayerService
         return fetchedPlayers;
     }
 
+    public void NotifyAll(string command, string message)
+    {
+        foreach (var player in _players)
+        {
+            player.Notify(command, message);
+        }
+    }
+    
     public void AddPlayer(Player player)
     {
+        NotifyAll(ServerCommands.LeaderboardUpdated, string.Empty);
         _players.Add(player);
     }
 

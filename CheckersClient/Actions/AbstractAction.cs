@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using Domain.Converters;
 using Domain.Models;
+using Domain.Converters;
 using Domain.Models.Server;
 using Newtonsoft.Json;
 
-namespace CheckersClient.ClientActions
+namespace CheckersClient.Actions
 {
     public abstract class AbstractAction
     {
@@ -21,15 +21,15 @@ namespace CheckersClient.ClientActions
             );
         }
 
-        protected ServerResponse ExecuteAction<TPayload>(string command, TPayload payload) 
+        protected Response ExecuteAction<TPayload>(string command, TPayload payload) 
         {
-            ServerResponse response = null;
+            Response response = null;
             try
             {
                 var socket = ServerInfo.SharedSocket;
                 socket.Connect(_ipPoint);
                 
-                var request = new ClientRequest
+                var request = new Request
                 {
                     Command = command,
                     Payload = JsonConvert.SerializeObject(payload)
@@ -42,7 +42,7 @@ namespace CheckersClient.ClientActions
 
                 socket.Receive(data, data.Length, 0);
 
-                response = UniversalConverter.ConvertBytes<ServerResponse>(data);
+                response = UniversalConverter.ConvertBytes<Response>(data);
 
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
@@ -54,6 +54,6 @@ namespace CheckersClient.ClientActions
             return response;
         }
 
-        public abstract ServerResponse Request();
+        public abstract Response Request();
     }
 }

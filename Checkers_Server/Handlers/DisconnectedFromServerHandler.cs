@@ -13,13 +13,13 @@ public class DisconnectedFromServerHandler : ICommandHandler
         _multiplayerService = multiplayerService;
     }
 
-    public ServerResponse Handle(string payload)
+    public Response Handle(string payload)
     {
         Console.WriteLine("Disconnect from server!");
         var unpackedPayload = payload;
 
         _multiplayerService.RemovePlayer(unpackedPayload);
-        var response = new ServerResponse
+        var response = new Response
         {
             Status = "OK",
             Payload = string.Empty

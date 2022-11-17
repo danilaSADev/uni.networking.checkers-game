@@ -38,9 +38,10 @@ public class ServerSocketListener
 
                 var data = new byte[65536];
                 handler.Receive(data);
-                Console.WriteLine($"Client connected from : {(handler.RemoteEndPoint as IPEndPoint)?.Address}" );
+                var remoteEndpoint = (handler.RemoteEndPoint as IPEndPoint);
+                Console.WriteLine($"Received from : {remoteEndpoint?.Address}:{remoteEndpoint?.Port}" );
                 
-                var request = UniversalConverter.ConvertBytes<ClientRequest>(data);
+                var request = UniversalConverter.ConvertBytes<Request>(data);
                 Console.WriteLine(DateTime.Now.ToShortTimeString() + " : " + request.Payload);
 
                 var response = _binder.Handle(request);

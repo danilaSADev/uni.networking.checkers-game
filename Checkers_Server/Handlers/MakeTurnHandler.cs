@@ -13,7 +13,7 @@ public class MakeTurnHandler : ICommandHandler
         _multiplayerService = multiplayerService;
     }
     
-    public ServerResponse Handle(string payload)
+    public Response Handle(string payload)
     {
         
         

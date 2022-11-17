@@ -35,6 +35,8 @@ namespace CheckersClient.GameGraphics
             this.panel1 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // panel1
@@ -70,11 +72,31 @@ namespace CheckersClient.GameGraphics
             // 
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(524, 125);
+            this.label1.Location = new System.Drawing.Point(61, 419);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(140, 37);
+            this.label1.Size = new System.Drawing.Size(140, 19);
             this.label1.TabIndex = 2;
             this.label1.Text = "label1";
+            // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label2.Location = new System.Drawing.Point(403, 252);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(140, 37);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "label2";
+            // 
+            // label3
+            // 
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label3.Location = new System.Drawing.Point(61, 403);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(140, 16);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Metadata:";
             // 
             // GameForm
             // 
@@ -83,12 +105,15 @@ namespace CheckersClient.GameGraphics
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(794, 571);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.panel1);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "GameForm";
             this.Text = "GameForm";
@@ -96,6 +121,10 @@ namespace CheckersClient.GameGraphics
             this.Load += new System.EventHandler(this.GameForm_Load);
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.Label label2;
+
+        private System.Windows.Forms.Label label3;
 
         private System.Windows.Forms.Label label1;
 

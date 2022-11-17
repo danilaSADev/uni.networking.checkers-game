@@ -1,23 +1,23 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using Domain.Models;
-using Domain.Models.Shared;
+﻿using Domain.Models.Shared;
 using Domain.Payloads.Client;
-using CheckersServer.Models;
-using Domain.Converters;
 using Domain.Models.Server;
+using Domain.Payloads.Server;
+using Newtonsoft.Json;
+using CheckersServer.Models;
 
 namespace CheckersServer.Services;
 
 public class Lobby
 {
     private static readonly int MaxPlayers = 2;
-    private readonly List<Player> _players;
+    private readonly Dictionary<Side, Player> _players;
     private GameSettings _settings;
     private readonly Player _host;
-    private int _rounds = 1;
+    private int _roundsLeft = 1;
     private Side TurnSide => (Side)((_turnCounter + (int)_startSide) % 2);
+    private Side OppositeSide => (Side)((_turnCounter + (int)_startSide + 1) % 2);
     private Side _startSide = Side.White;
+    private Side SecondSideOption => (Side)(((int)_players.Keys.First() + 1) % 2);
     private int _turnCounter = 0;
 
     public int PlayersAmount => _players.Count;
@@ -29,61 +29,55 @@ public class Lobby
     {
         Identifier = identifier;
         _settings = settings;
-        _players = new List<Player>();
+        _players = new Dictionary<Side, Player>();
         _host = host;
         
         if (_settings.IsTournament)
-            _rounds = 3;
+            _roundsLeft = 3;
         
-        ConnectPlayer(host);
+        var rand = new Random();
+        var firstSide = (Side)rand.Next(0, 2);
+        _players.Add(firstSide, host);
     }
 
     public void ChangeGameSettings(GameSettings settings) => _settings = settings;
     public bool TryMakeTurn(MakeTurnPayload payload)
     {
-        // TODO : check identifiers
-        if (payload.TurnSide.Equals(TurnSide))
+        if (payload.TurnSide.Equals(TurnSide) && _players.Any(p => p.Value.Identifier == payload.UserId))
         {
+            _players[OppositeSide].Notify(ServerCommands.MakeTurn, JsonConvert.SerializeObject(payload));
+            if (payload.FinishedTurn)
+            {
+                _turnCounter++;
+            }
             // TODO : send changes to another player
             return true;
         }
         return false;
     }
-
-    private void SendDataToPlayer(Player player)
-    {
-        
-    }
     
+    /// <summary>
+    /// Logic for starting an actual game process.
+    /// </summary>
     private void StartGame()
     {
-        var rand = new Random();
-
-        var firstSide = (Side)rand.Next(0, 2);
-        var secondSide = (Side)(1 - (int)firstSide);
-        
-        // TODO : for each player create socket
-        // TODO : send information about side and number of games
+        foreach (var pair in _players)
+        {
+            var payload = new GameStartedPayload()
+            {
+                PlayerSide = pair.Key
+            };
+            pair.Value.Notify(ServerCommands.GameStarted, JsonConvert.SerializeObject(payload));
+        }
     }
     
     public void ConnectPlayer(Player player)
     {
         if (_players.Count == MaxPlayers)
             return;
-        
-        _players.Add(player);
 
-        var endpoint = new IPEndPoint(IPAddress.Parse(player.IpAddress), player.Port);
-        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        _players.Add(SecondSideOption, player);
         
-        socket.SendTimeout = ServerInfo.MaxClientResponseTime;
-        socket.Connect(endpoint);
-        
-        var request = new ServerRequest { Payload = "Experimental message"};
-        socket.Send(UniversalConverter.ConvertObject(request));
-        
-        player.GameSocket = socket;
-
         if (_players.Count == MaxPlayers)
             StartGame();
     }
@@ -101,11 +95,10 @@ public class Lobby
     
     public void DisconnectPlayer(Player player)
     {
-        if (_players.Contains(player))
+        if (_players.ContainsValue(player))
         {
-            player.GameSocket?.Disconnect(false);
-            player.GameSocket?.Dispose();
-            _players.Remove(player);
+            var key = _players.FirstOrDefault(pair => pair.Value.Identifier == player.Identifier).Key;
+            _players.Remove(key);
         }
     }
 }

@@ -16,7 +16,7 @@ public class DisconnectedFromLobbyHandler : ICommandHandler
         _multiplayerService = multiplayerService;
     }
     
-    public ServerResponse Handle(string payload)
+    public Response Handle(string payload)
     {
         var deserializedPayload = JsonConvert.DeserializeObject<DisconnectFromLobbyPayload>(payload);
 
@@ -29,7 +29,7 @@ public class DisconnectedFromLobbyHandler : ICommandHandler
         {
         };
 
-        var response = new ServerResponse
+        var response = new Response
         {
             Status = "OK",
             Payload = JsonConvert.SerializeObject(responsePayload)
