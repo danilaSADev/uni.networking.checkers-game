@@ -19,7 +19,7 @@ namespace CheckersClient.Handlers
         {
             var unpackedPayload = JsonConvert.DeserializeObject<MakeTurnPayload>(payload);
             _board.MakeOpponentTurn(unpackedPayload);
-
+            _board.ResetTurnCredits();
             return Response.Ok;
         }
     }

@@ -6,9 +6,9 @@ namespace CheckersClient.Services
 {
     public partial class Board
     {
-        private int _turnCreditsLeft = 1;
+        private int _turnCreditsLeft = 0;
         private readonly List<Checker> _checkers;
-        private bool _isGameRunning = false;
+        private bool _isGameRunning;
         private List<Vector> _directions = new List<Vector>();
         public string UserId { get; set; }
 
@@ -170,7 +170,7 @@ namespace CheckersClient.Services
 
         public void ClickedAt(Vector pos)
         {
-            if (!_isGameRunning || _turnSide != _playerSide)
+            if (!_isGameRunning || _turnSide != _playerSide || _turnCreditsLeft == 0)
                 return;
             
             if (Selected == null)
@@ -202,15 +202,12 @@ namespace CheckersClient.Services
             bool notNextMoveGuaranteed = CalculatePossibleDirections(Selected).Item1.Count == 0;
 
             var turnType = notBeating ? TurnType.Movement : TurnType.Beating;
+            _turnCreditsLeft--;
 
-            var turnFinished = (notBeating || notNextMoveGuaranteed);
-            //
-            // if (notBeating)
-            //     _turnCreditsLeft--;
-            
+            var turnFinished = (notBeating || notNextMoveGuaranteed) && _turnCreditsLeft == 0;
+
             if (turnFinished)
             {
-                // _turnCreditsLeft = TurnCredits;
                 _turnSide = _opponentSide;
             }
             

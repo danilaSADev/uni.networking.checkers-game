@@ -6,6 +6,7 @@ using CheckersClient.Actions;
 using CheckersClient.ClientActions;
 using CheckersClient.Models;
 using Domain.Models.Shared;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
@@ -20,9 +21,6 @@ namespace CheckersClient.Services
     public partial class Board
     {
         private GameSettings _gameSettings;
-
-        // private int TurnCredits => _gameSettings.Difficulty == GameDifficulty.Hard ? 2 : 1;
-
         public Side PlayerSide => _playerSide;
         
         private Side _playerSide;
@@ -41,6 +39,7 @@ namespace CheckersClient.Services
             var turnInformation = new TurnInformation
             {
                 TurnSide = _playerSide,
+                // checking if any turn credits left
                 FinishedTurn = turnFinished,
                 FromPosition = start,
                 ToPosition = end,
@@ -49,7 +48,7 @@ namespace CheckersClient.Services
                 LobbyId = _gameSettings.LobbyId
             };
             MakeTurnAction action = new MakeTurnAction(turnInformation);
-            action.Request();
+            var response = action.Request();
         }
         
         public bool CheckIfBeatingAndBeat(Vector start, Vector end)
@@ -71,6 +70,11 @@ namespace CheckersClient.Services
             }
 
             return removedObstacle;
+        }
+
+        public void ResetTurnCredits()
+        {
+            _turnCreditsLeft = _gameSettings.Difficulty == GameDifficulty.Hard ? 2 : 1;
         }
         
         public void MakeOpponentTurn(MakeTurnPayload payload)
@@ -106,8 +110,8 @@ namespace CheckersClient.Services
         {
             _playerSide = payload.PlayerSide;
             _opponentSide = (Side)(((int)_playerSide + 1) % 2);
+            _turnCreditsLeft = _playerSide == Side.White ? 1 : 2;
             _isGameRunning = true;
-            // _turnCreditsLeft = _playerSide == _turnSide ? 1 : TurnCredits;
             
             if (StateChanged != null) 
                 StateChanged.Invoke(this, new GameStateChangedArgs());

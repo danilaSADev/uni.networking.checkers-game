@@ -94,6 +94,7 @@ public class Lobby
     {
         return new LobbyInformation
         {
+            Difficulty = _settings.Difficulty,
             IsTournament = _settings.IsTournament,
             TimeToMakeTurn = _settings.TimeOut,
             Identifier = Identifier,
