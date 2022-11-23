@@ -5,9 +5,9 @@
     {
         public string RoomName { get; set; }
         public GameDifficulty Difficulty { get; set; }
+        public string LobbyId { get; set; }
         public bool IsTournament { get; set; }
         public int TimeOut { get; set; } = 30000;
-        
     }
 
     public enum GameDifficulty
@@ -18,8 +18,8 @@
     
     public enum Side
     {
-        Black,
-        White
+        White,
+        Black
     }
     public enum TurnType
     {

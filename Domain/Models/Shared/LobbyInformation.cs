@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public bool IsTournament { get; set; }
         public int TimeToMakeTurn { get; set; }
+        public GameDifficulty Difficulty { get; set; }
     }
 }

@@ -77,15 +77,22 @@
         <Compile Include="Forms\IndexForm.Designer.cs">
           <DependentUpon>IndexForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Handlers\GameStartedHandler.cs" />
+        <Compile Include="Handlers\LeaderboardUpdatedHandler.cs" />
+        <Compile Include="Handlers\LobbiesUpdatedHandler.cs" />
+        <Compile Include="Handlers\MadeTurnHandler.cs" />
         <Compile Include="Main\ConnectionEstablisher.cs" />
-        <Compile Include="Main\GameSession.cs" />
         <Compile Include="Models\Checker.cs" />
         <Compile Include="Models\GameStats.cs" />
         <Compile Include="Models\TurnInformation.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Services\Board.cs" />
+        <Compile Include="Services\BoardNetworkingLogic.cs">
+          <DependentUpon>Board.cs</DependentUpon>
+        </Compile>
         <Compile Include="Services\ClientSocketListener.cs" />
+        <Compile Include="Services\SourcesStorage.cs" />
         <EmbeddedResource Include="Forms\GamesListForm.resx">
           <DependentUpon>GamesListForm.cs</DependentUpon>
         </EmbeddedResource>

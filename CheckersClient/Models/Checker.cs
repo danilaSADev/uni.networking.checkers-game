@@ -20,14 +20,24 @@ namespace CheckersClient
 
         public Vector Position { get; private set; }
 
+        public bool IsMoveValid(Vector position) => MovementOptions.Contains(position);
+
         public void Move(Vector newPosition)
         {
+            if (MovementOptions == null)
+                return;
+            
             if (!MovementOptions.Contains(newPosition))
                 return;
             
             if (newPosition.Y == (Side.Equals(Side.White) ? 7 : 0))
                 IsKing = true;
             
+            Position = newPosition;
+        }
+
+        public void OpponentMove(Vector newPosition)
+        {
             Position = newPosition;
         }
     }

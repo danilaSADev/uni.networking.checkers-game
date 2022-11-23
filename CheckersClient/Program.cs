@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Windows.Forms;
+using CheckersClient.Forms;
 using Domain.Models;
 
 namespace CheckersClient

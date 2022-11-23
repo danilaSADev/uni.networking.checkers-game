@@ -1,24 +1,22 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Models.Shared;
-using CheckersClient.Main;
-using Domain.Payloads.Client;
-
-namespace CheckersClient
+namespace CheckersClient.Services
 {
-    public class Board
+    public partial class Board
     {
+        private int _turnCreditsLeft = 1;
         private readonly List<Checker> _checkers;
+        private bool _isGameRunning = false;
         private List<Vector> _directions = new List<Vector>();
-        private readonly GameSession _gameSession;
+        public string UserId { get; set; }
 
-        public Board(GameSession gameSession)
+        public Board(GameSettings gameSettings)
         {
+            _gameSettings = gameSettings;
             _directions.Add(new Vector(1,1));
             _directions.Add(new Vector(-1,1));
-            // TODO : replace with side retrieved from the server
-            _gameSession = gameSession;
             _checkers = new List<Checker>();
         }
         
@@ -40,8 +38,8 @@ namespace CheckersClient
                     _checkers.Add(check);
                 }
         }
-        
 
+        
         private Checker CastRay(Vector startPosition, Vector direction, int distance)
         {
             var vec = startPosition;
@@ -63,22 +61,16 @@ namespace CheckersClient
         {
             return _checkers.FirstOrDefault(c => c.Position.Equals(position)) != null;
         }
-        
-        
-        public void MakeOpponentTurn(MakeTurnPayload payload)
-        {
-            
-        }
 
         public void CalculateAllPossibleDirections()
         {
-            if (!_gameSession.IsGameRunning)
+            if (!_isGameRunning)
                 return;
             
             Dictionary<Checker, List<Vector>> toBeatOptions = new Dictionary<Checker, List<Vector>>();
             Dictionary<Checker, List<Vector>> toMoveOptions = new Dictionary<Checker, List<Vector>>();
 
-            var playerCheckers = _checkers.Where(c => c.Side == _gameSession.PlayerSide).ToArray();
+            var playerCheckers = _checkers.Where(c => c.Side == _playerSide).ToArray();
 
             bool isOnlyBeating = false;
             
@@ -150,9 +142,6 @@ namespace CheckersClient
                 if (anyObstacle)
                     continue;
                 
-                // TODO : Implement feature "only beating"
-                // TODO: Execute this method automatically
-                // adding new possible positions
                 int counter = 0;
 
                 for (Vector vec = startPosition + direction; IsOnBoard(vec) && counter < distance && !AnyObstacle(vec); vec += direction)
@@ -181,7 +170,7 @@ namespace CheckersClient
 
         public void ClickedAt(Vector pos)
         {
-            if (!_gameSession.IsGameRunning)
+            if (!_isGameRunning || _turnSide != _playerSide)
                 return;
             
             if (Selected == null)
@@ -189,7 +178,7 @@ namespace CheckersClient
                 Selected = _checkers.FirstOrDefault(x => 
                     x.Position.X == pos.X && 
                     x.Position.Y == pos.Y && 
-                    x.Side == _gameSession.PlayerSide); 
+                    x.Side == _playerSide); 
                 return;
             }
 
@@ -201,11 +190,31 @@ namespace CheckersClient
 
             var any = _checkers.FirstOrDefault(x => x.Position.X == pos.X && x.Position.Y == pos.Y);
 
-            if (any == null)
+            if (any != null || !Selected.IsMoveValid(pos))
+                return;
+
+            var start = Selected.Position;
+            var end = pos;
+            
+            var notBeating = !CheckIfBeatingAndBeat(start, end);
+            Selected.Move(pos);
+
+            bool notNextMoveGuaranteed = CalculatePossibleDirections(Selected).Item1.Count == 0;
+
+            var turnType = notBeating ? TurnType.Movement : TurnType.Beating;
+
+            var turnFinished = (notBeating || notNextMoveGuaranteed);
+            //
+            // if (notBeating)
+            //     _turnCreditsLeft--;
+            
+            if (turnFinished)
             {
-                Selected.Move(pos);
+                // _turnCreditsLeft = TurnCredits;
+                _turnSide = _opponentSide;
             }
             
+            SendTurnToServer(turnFinished, start, end, turnType);  
             Selected = null;
         }
 

@@ -14,10 +14,12 @@ public class Lobby
     private GameSettings _settings;
     private readonly Player _host;
     private int _roundsLeft = 1;
-    private Side TurnSide => (Side)((_turnCounter + (int)_startSide) % 2);
-    private Side OppositeSide => (Side)((_turnCounter + (int)_startSide + 1) % 2);
-    private Side _startSide = Side.White;
-    private Side SecondSideOption => (Side)(((int)_players.Keys.First() + 1) % 2);
+    
+    private Side TurnSide => (Side)(_turnCounter % 2);
+    private Side OppositeSide => (Side)((_turnCounter + 1) % 2);
+    
+    private int _firstSideValue = 0;
+    private int _secondSideValue = 1;
     private int _turnCounter = 0;
 
     public int PlayersAmount => _players.Count;
@@ -36,26 +38,31 @@ public class Lobby
             _roundsLeft = 3;
         
         var rand = new Random();
-        var firstSide = (Side)rand.Next(0, 2);
+        _firstSideValue = 1;//rand.Next(0, 2);
+        _secondSideValue = (_firstSideValue + 1) % 2;
+        var firstSide = (Side)_firstSideValue;
         _players.Add(firstSide, host);
     }
 
     public void ChangeGameSettings(GameSettings settings) => _settings = settings;
     public bool TryMakeTurn(MakeTurnPayload payload)
     {
-        if (payload.TurnSide.Equals(TurnSide) && _players.Any(p => p.Value.Identifier == payload.UserId))
+        if (payload.TurnSide.Equals(TurnSide) && _players[TurnSide].Identifier == payload.UserId)
         {
             _players[OppositeSide].Notify(ServerCommands.MakeTurn, JsonConvert.SerializeObject(payload));
             if (payload.FinishedTurn)
             {
                 _turnCounter++;
             }
-            // TODO : send changes to another player
             return true;
         }
         return false;
     }
-    
+
+    private void FinishGame()
+    {
+        
+    }
     /// <summary>
     /// Logic for starting an actual game process.
     /// </summary>
@@ -63,11 +70,14 @@ public class Lobby
     {
         foreach (var pair in _players)
         {
-            var payload = new GameStartedPayload()
+            var payload = new GameStartedPayload
             {
                 PlayerSide = pair.Key
             };
-            pair.Value.Notify(ServerCommands.GameStarted, JsonConvert.SerializeObject(payload));
+            pair.Value.Notify(
+                ServerCommands.GameStarted, 
+                JsonConvert.SerializeObject(payload)
+                );
         }
     }
     
@@ -76,10 +86,8 @@ public class Lobby
         if (_players.Count == MaxPlayers)
             return;
 
-        _players.Add(SecondSideOption, player);
-        
-        if (_players.Count == MaxPlayers)
-            StartGame();
+        _players.Add((Side)_secondSideValue, player);
+        StartGame();
     }
 
     public LobbyInformation GetInformation()

@@ -2,6 +2,7 @@
 using CheckersServer.Services;
 using Domain.Models;
 using Domain.Models.Shared;
+using Domain.Payloads.Client;
 
 namespace CheckersServer.Interfaces;
 
@@ -14,6 +15,7 @@ public interface IMultiplayerService
     LobbyInformation ConnectToRoom(string userId, string lobbyId);
     void DisconnectFromRoom(string userId, string lobbyId);
     bool IsUserValid(string identifier);
+    bool TryMakeTurn(MakeTurnPayload payload);
     List<LobbyInformation> GetLobbies();
     Dictionary<string, int> GetLeaderboard();
 }

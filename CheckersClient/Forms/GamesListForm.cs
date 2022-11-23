@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Linq;
-using System.Security.AccessControl;
 using System.Windows.Forms;
 using CheckersClient.ClientActions;
-using CheckersClient.GameGraphics;
-using Domain.Models;
-using Domain.Models.Server;
+using CheckersClient.Services;
 using Domain.Models.Shared;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
 
-namespace CheckersClient
+namespace CheckersClient.Forms
 {
     public partial class GamesListForm : Form
     {
         private readonly string _userIdentifier;
         private string _selectedLobbyIdentifier;
 
+        private readonly SourcesStorage _storage;
+        
         private readonly BindingSource _leaderboardDataSource;
         private readonly BindingSource _lobbiesDataSource;
         private readonly ClientSocketListener _clientSocketListener;
         
-        public GamesListForm(ClientSocketListener listener, string userIdentifier)
+        public GamesListForm(ClientSocketListener listener, string userIdentifier, SourcesStorage storage)
         {
             _clientSocketListener = listener;
-            _leaderboardDataSource = new BindingSource();
-            _lobbiesDataSource = new BindingSource();
+            _leaderboardDataSource = storage.LeaderboardSource;
+            _lobbiesDataSource = storage.LobbiesSource;
             _userIdentifier = userIdentifier;
+            _storage = storage;
             InitializeComponent();
         }
 
@@ -41,7 +41,8 @@ namespace CheckersClient
 
         private void GoToLobby(LobbyInformation information)
         {
-            var form = new GameForm(_userIdentifier, information, _clientSocketListener);
+            var form = new GameForm(_userIdentifier, information, _clientSocketListener.GameBoard);
+            _clientSocketListener.GameBoard.SetLobbyInformation(information);
             form.Show();
             form.StartPosition = FormStartPosition.Manual;
             form.Location = this.Location;
@@ -73,7 +74,6 @@ namespace CheckersClient
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
-            _clientSocketListener.OnServerMessageRecieved -= OnServerMessage_LeaderboardUpdated;
             _clientSocketListener.StopListeningToServer();
             var action = new DisconnectFromServerAction(_userIdentifier);
             action.Request();
@@ -109,7 +109,7 @@ namespace CheckersClient
 
             if (response.Payload.Equals(string.Empty))
             {
-                // TODO : dialog on payload is empty 
+                MessageBox.Show("Failed to get lobbies", "Error", MessageBoxButtons.OK);
                 return;
             }
 
@@ -118,26 +118,19 @@ namespace CheckersClient
             _lobbiesDataSource.DataSource = list.Select(s =>
                 new {
                     ID = s.Identifier,
-                    Name = s.Name,
-                    IsTournament = s.IsTournament
+                    s.Name,
+                    s.IsTournament
                 });
         }
         
         private void OnFormLoaded(object sender, EventArgs e)
         {
-            _clientSocketListener.OnServerMessageRecieved += OnServerMessage_LeaderboardUpdated;
+            CheckForIllegalCrossThreadCalls = false;
+            _clientSocketListener.TryStartListeningToServer();
             RefreshLeaderboard(sender, e);
             leaderboard.DataSource = _leaderboardDataSource;
             roomsList.DataSource = _lobbiesDataSource;
             difficultyComboBox.DataSource = Enum.GetValues(typeof(GameDifficulty));
-            // starting listening to server
-            // _clientSocketListener.StartListeningToServer();
-        }
-
-        public void OnServerMessage_LeaderboardUpdated(string command, string payload)
-        {
-            if (command.Equals(ServerCommands.LeaderboardUpdated))
-                RefreshLeaderboard(this, EventArgs.Empty);
         }
         
         private void SelectRoom(object sender, DataGridViewCellEventArgs e)
@@ -154,13 +147,14 @@ namespace CheckersClient
             
             if (response.Status.Equals("FAILED") || response.Payload.Equals(string.Empty))
             {
-                // TODO : dialog on payload is empty 
+                MessageBox.Show("Failed to connect to the lobby", "Error", MessageBoxButtons.OK);
                 return;
             }
 
             var unpackedPayload = JsonConvert.DeserializeObject<ConnectedToLobbyPayload>(response.Payload);
             
-            GoToLobby(unpackedPayload.Information);
+            if (unpackedPayload != null)
+                GoToLobby(unpackedPayload.Information);
         }
     }
 }

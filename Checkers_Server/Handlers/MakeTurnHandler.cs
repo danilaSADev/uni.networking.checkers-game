@@ -1,6 +1,10 @@
 ﻿using CheckersServer.Interfaces;
 using Domain.Models;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Interfaces;
+using Domain.Networking.Handlers.Models;
+using Domain.Payloads.Client;
+using Newtonsoft.Json;
 
 namespace CheckersServer.Handlers;
 
@@ -15,8 +19,13 @@ public class MakeTurnHandler : ICommandHandler
     
     public Response Handle(string payload)
     {
+        var unpackedPayload = JsonConvert.DeserializeObject<MakeTurnPayload>(payload);
+
+        if (unpackedPayload != null && !_multiplayerService.TryMakeTurn(unpackedPayload))
+        {
+            return Response.Failed;
+        }
         
-        
-        throw new NotImplementedException();
+        return Response.Ok;
     }
 }

@@ -6,6 +6,7 @@ using Domain.Converters;
 using Domain.Models;
 using Domain.Models.Server;
 using Domain.Models.Shared;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 using Newtonsoft.Json;
 

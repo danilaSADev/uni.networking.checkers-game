@@ -1,10 +1,8 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using CheckersServer.Common;
+﻿using CheckersServer.Common;
 using CheckersServer.Interfaces;
 using CheckersServer.Models;
-using Domain.Models;
-using Domain.Models.Server;
+using Domain.Networking.Handlers.Interfaces;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
@@ -29,18 +27,12 @@ public class ConnectedToServerHandler : ICommandHandler
         // TODO : write data to database        
         var id = IdentifierGenerator.Generate(deserializedPayload.Username);
                 
-        // Initializing player socket
-        var endpoint = new IPEndPoint(IPAddress.Parse(deserializedPayload.IpAddress), deserializedPayload.Port);
-        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        
-        socket.SendTimeout = ServerInfo.MaxClientResponseTime;
-        socket.Connect(endpoint);
-        
         var player = new Player
         {
-            Nickname = deserializedPayload.Username,
+            Nickname = deserializedPayload?.Username ?? string.Empty,
             Identifier = id,
-            GameSocket = socket
+            IpAddress = deserializedPayload.IpAddress,
+            Port = deserializedPayload.Port
         };
 
         _multiplayerService.AddPlayer(player);

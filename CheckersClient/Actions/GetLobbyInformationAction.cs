@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Models;
 
 namespace CheckersClient.Actions
 {

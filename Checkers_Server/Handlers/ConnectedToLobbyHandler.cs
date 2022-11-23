@@ -1,8 +1,6 @@
-﻿using CheckersServer.Common;
-using CheckersServer.Interfaces;
-using CheckersServer.Models;
-using Domain.Models;
-using Domain.Models.Server;
+﻿using CheckersServer.Interfaces;
+using Domain.Networking.Handlers.Interfaces;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;

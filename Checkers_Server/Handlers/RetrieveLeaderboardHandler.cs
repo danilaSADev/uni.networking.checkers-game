@@ -3,6 +3,8 @@ using CheckersServer.Interfaces;
 using CheckersServer.Services;
 using Domain.Models;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Interfaces;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
@@ -23,7 +25,7 @@ public class RetrieveLeaderboardHandler : ICommandHandler
         var unpackedPayload = JsonConvert.DeserializeObject<RequestLeaderboardPayload>(payload);
 
         if (!_service.IsUserValid(unpackedPayload.UserIdentifier))
-            return Response.FailedResponse;
+            return Response.Failed;
 
         var responsePayload = new FetchedLeaderboardPayload()
         {

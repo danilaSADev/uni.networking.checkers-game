@@ -3,6 +3,7 @@ using CheckersClient.Actions;
 using CheckersClient.Main;
 using Domain.Models;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 
 namespace CheckersClient.ClientActions

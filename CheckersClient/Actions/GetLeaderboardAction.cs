@@ -4,6 +4,7 @@ using CheckersClient.Actions;
 using Domain.Converters;
 using Domain.Models;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 using Newtonsoft.Json;
 

@@ -1,4 +1,4 @@
-﻿namespace CheckersClient
+﻿namespace CheckersClient.Forms
 {
     partial class IndexForm
     {
@@ -60,7 +60,7 @@
             this.usernameBox.Name = "usernameBox";
             this.usernameBox.Size = new System.Drawing.Size(229, 33);
             this.usernameBox.TabIndex = 1;
-            this.usernameBox.Text = "";
+            this.usernameBox.Text = "danilasadev";
             // 
             // passwordBox
             // 
@@ -72,7 +72,7 @@
             this.passwordBox.Name = "passwordBox";
             this.passwordBox.Size = new System.Drawing.Size(229, 33);
             this.passwordBox.TabIndex = 2;
-            this.passwordBox.Text = "";
+            this.passwordBox.Text = "1234";
             // 
             // label1
             // 

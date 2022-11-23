@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using Domain.Models;
 using Domain.Converters;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Models;
 using Newtonsoft.Json;
 
 namespace CheckersClient.Actions
@@ -45,7 +46,7 @@ namespace CheckersClient.Actions
                 response = UniversalConverter.ConvertBytes<Response>(data);
 
                 socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
+                socket.Close(); 
             }
             catch (Exception ex)
             {

@@ -1,6 +1,8 @@
 ﻿using CheckersServer.Interfaces;
 using Domain.Models;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Interfaces;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
@@ -21,7 +23,7 @@ public class CreateLobbyHandler : ICommandHandler
         var parsedPayload = JsonConvert.DeserializeObject<CreateLobbyPayload>(payload);
 
         if (!_multiplayerService.IsUserValid(parsedPayload.HostIdentifier))
-            return Response.FailedResponse;
+            return Response.Failed;
         
         var lobbyInformation = _multiplayerService.CreateRoom(parsedPayload.HostIdentifier, parsedPayload.Settings);
         var responsePayload = new CreatedLobbyPayload()

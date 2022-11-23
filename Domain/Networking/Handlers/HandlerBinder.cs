@@ -1,8 +1,9 @@
-﻿using CheckersServer.Interfaces;
-using Domain.Models;
-using Domain.Models.Server;
+﻿using System;
+using System.Collections.Generic;
+using Domain.Networking.Handlers.Interfaces;
+using Domain.Networking.Handlers.Models;
 
-namespace CheckersServer.Services;
+namespace Domain.Networking.Handlers;
 
 public class HandlerBinder
 {
@@ -16,7 +17,7 @@ public class HandlerBinder
     public Response Handle(Request request)
     {
         if (request.Payload.Equals(string.Empty))
-            return Response.FailedResponse;
+            return Response.Empty;
         
         if (_handlers.Keys.Contains(request.Command))
             return _handlers[request.Command].Handle(request.Payload);

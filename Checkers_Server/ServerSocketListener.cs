@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using CheckersServer.Services;
 using Domain.Converters;
-using Domain.Models;
 using Domain.Models.Server;
+using Domain.Networking.Handlers;
+using Domain.Networking.Handlers.Models;
 
 namespace CheckersServer;
 
@@ -20,7 +20,7 @@ public class ServerSocketListener
     public void StartServer()
     {
         var ipPoint = new IPEndPoint(
-            IPAddress.Parse("192.168.0.101"), 
+            IPAddress.Parse(ServerInfo.IpAddress),
             ServerInfo.Port
         );
 

@@ -1,9 +1,11 @@
 ﻿using CheckersServer.Common;
 using CheckersServer.Interfaces;
 using CheckersServer.Models;
-using Domain.Models;
 using Domain.Models.Server;
 using Domain.Models.Shared;
+using Domain.Payloads.Client;
+using Domain.Payloads.Server;
+using Newtonsoft.Json;
 
 namespace CheckersServer.Services;
 
@@ -19,9 +21,13 @@ public class MultiplayerService : IMultiplayerService
         if (player == null)
             return;
         
-        player.Dispose();
         _players.Remove(player);
-        NotifyAll(ServerCommands.LeaderboardUpdated, "Leaderboard is updated!");
+        var leaderboard = GetLeaderboard();
+        var payload = new FetchedLeaderboardPayload()
+        {
+            Leaderboard = leaderboard
+        };
+        NotifyAll(ServerCommands.LeaderboardUpdated, JsonConvert.SerializeObject(payload));
     }
 
     public LobbyInformation GetLobbyInformation(string lobbyIdentifier)
@@ -46,7 +52,7 @@ public class MultiplayerService : IMultiplayerService
     }
 
     public Dictionary<string, int> GetLeaderboard()
-    {
+    {           
         Dictionary<string, int> fetchedPlayers = new Dictionary<string, int>();
         
         foreach (var player in _players)
@@ -64,10 +70,20 @@ public class MultiplayerService : IMultiplayerService
             player.Notify(command, message);
         }
     }
-    
+
+    public bool TryMakeTurn(MakeTurnPayload payload) => _rooms
+        .First(l => l.Identifier == payload.LobbyId)
+        .TryMakeTurn(payload);
+
     public void AddPlayer(Player player)
     {
-        NotifyAll(ServerCommands.LeaderboardUpdated, string.Empty);
+        var leaderboard = GetLeaderboard();
+        leaderboard.Add(player.Nickname, player.Score);
+        var payload = new FetchedLeaderboardPayload()
+        {
+            Leaderboard = leaderboard
+        };
+        NotifyAll(ServerCommands.LeaderboardUpdated, JsonConvert.SerializeObject(payload));
         _players.Add(player);
     }
 

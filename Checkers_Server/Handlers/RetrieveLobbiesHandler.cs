@@ -2,6 +2,8 @@
 using CheckersServer.Interfaces;
 using Domain.Models;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Interfaces;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
@@ -22,7 +24,7 @@ public class RetrieveLobbiesHandler : ICommandHandler
         var unpackedPayload = JsonConvert.DeserializeObject<RequestLobbiesPayload>(payload);
 
         if (!_multiplayerService.IsUserValid(unpackedPayload.UserIdentifier))
-            return Response.FailedResponse;
+            return Response.Failed;
 
         var responsePayload = new FetchedLobbiesPayload()
         {

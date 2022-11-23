@@ -1,10 +1,9 @@
-﻿using CheckersClient.Actions;
-using Domain.Models;
-using Domain.Models.Server;
+﻿using Domain.Models;
 using Domain.Models.Shared;
+using Domain.Networking.Handlers.Models;
 using Domain.Payloads.Client;
 
-namespace CheckersClient.ClientActions
+namespace CheckersClient.Actions
 {
     public class MakeTurnAction : AbstractAction
     {
@@ -36,7 +35,8 @@ namespace CheckersClient.ClientActions
                 FromPosition = _fromPosition,
                 ToPosition = _toPosition,
                 TurnSide = _side,
-                FinishedTurn = _finishedTurn
+                FinishedTurn = _finishedTurn,
+                Type = _type
             };
             return ExecuteAction(ClientCommands.MakeTurn, payload);
         }

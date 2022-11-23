@@ -1,67 +1,36 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
-using CheckersClient.Actions;
-using CheckersClient.ClientActions;
-using CheckersClient.Main;
-using CheckersClient.Properties;
-using Domain.Models;
-using Domain.Models.Server;
 using Domain.Models.Shared;
-using Domain.Payloads.Client;
-using Domain.Payloads.Server;
-using Newtonsoft.Json;
+using CheckersClient.ClientActions;
+using CheckersClient.Properties;
+using CheckersClient.Services;
 
-namespace CheckersClient.GameGraphics
+namespace CheckersClient.Forms
 {
     public partial class GameForm : Form
     {
         private readonly string _userId;
         private readonly LobbyInformation _information;
-        private readonly ClientSocketListener _listener;
         private readonly Board _board;
-        private readonly GameSession _session;
         private Graphics _graphics;
+        private bool _isPainted = false;
 
-        public GameForm(string userId, LobbyInformation information, ClientSocketListener listener)
+        public GameForm(string userId, LobbyInformation information, Board board)
         {
             _userId = userId;
             _information = information;
-            _listener = listener;
-            _session = new GameSession(userId, new GameSettings());
-            _board = new Board(_session);
+            _board = board;
             InitializeComponent();
         }
         
         private void GameForm_Load(object sender, EventArgs e)
         {
-            _listener.OnServerMessageRecieved += OnServerMessage_StartGame;
-            _listener.OnServerMessageRecieved += OnServerMessage_MakeTurn;
+            CheckForIllegalCrossThreadCalls = false;
             _board.InitializeBoard();
-            DrawBoard();
+            _board.StateChanged += OnStatsChanged;
         }
         
-        public void OnServerMessage_StartGame(string command, string message)
-        {
-            if (!command.Equals(ServerCommands.GameStarted))
-                return;
-
-            var unpackedPayload = JsonConvert.DeserializeObject<GameStartedPayload>(message);
-            _session.StartGame(unpackedPayload);
-            label2.Text = "Game is running!";
-        }
-
-        private void OnServerMessage_MakeTurn(string command, string message)
-        {
-            if (!command.Equals(ServerCommands.MakeTurn))
-                return;
-
-            var unpackedPayload = JsonConvert.DeserializeObject<MakeTurnPayload>(message);
-            _board.MakeOpponentTurn(unpackedPayload);
-            
-        }
-
         private Image GetCheckImage(Checker checker)
         {
             Image img = checker.Side.Equals(Side.White)
@@ -101,6 +70,9 @@ namespace CheckersClient.GameGraphics
                 _graphics.DrawImage(Resources.selected, x - 7, y + 2);
                 _graphics.DrawImage(img, x, y);
 
+                if (_board.Selected.MovementOptions == null)
+                    return;
+
                 foreach (var direction in _board.Selected.MovementOptions)
                 {
                     _graphics.DrawImage(
@@ -110,12 +82,19 @@ namespace CheckersClient.GameGraphics
                 }
             }
         }
-        
-        
-        private void panel1_Paint(object sender, PaintEventArgs e)
+
+        private void OnStatsChanged(object sender, GameStateChangedArgs args)
         {
+            DrawBoard();
+            DrawGameStats();
         }
 
+        private void DrawGameStats()
+        {
+            // tODO : drawing all game stats
+            playerSide.Text = _board.PlayerSide.ToString();
+        }
+        
         private void panel1_MouseClick(object sender, MouseEventArgs e)
         {
             var mouseX = e.X;
@@ -142,8 +121,19 @@ namespace CheckersClient.GameGraphics
 
         private void OnLeavingLobby(object sender, FormClosedEventArgs e)
         {
+            _board.StateChanged -= OnStatsChanged;
+            _board.Reinitialize();
             var action = new DisconnectFromLobbyAction(_userId, _information.Identifier);
             action.Request();
+        }
+
+        private void GameForm_Shown(object sender, EventArgs e)
+        {
+            if (!_isPainted)
+            {
+                _isPainted = true;
+                DrawBoard();
+            }
         }
     }
 }

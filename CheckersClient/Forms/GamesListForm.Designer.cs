@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace CheckersClient
+namespace CheckersClient.Forms
 {
     partial class GamesListForm
     {

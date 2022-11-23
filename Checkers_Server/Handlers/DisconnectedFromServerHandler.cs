@@ -1,6 +1,8 @@
 ﻿using CheckersServer.Interfaces;
 using Domain.Models;
 using Domain.Models.Server;
+using Domain.Networking.Handlers.Interfaces;
+using Domain.Networking.Handlers.Models;
 
 namespace CheckersServer.Handlers;
 
