@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Windows.Forms;
 using CheckersClient.ClientActions;
+using CheckersClient.Handlers;
 using CheckersClient.Services;
+using Domain.Models.Server;
 using Domain.Models.Shared;
 using Domain.Payloads.Server;
 using Newtonsoft.Json;
@@ -43,15 +45,18 @@ namespace CheckersClient.Forms
         {
             var form = new GameForm(_userIdentifier, information, _clientSocketListener.GameBoard);
             _clientSocketListener.GameBoard.SetLobbyInformation(information);
+            _clientSocketListener.Bind(ServerCommands.ServerMessage, new ServerMessageHandler(form));
             form.Show();
             form.StartPosition = FormStartPosition.Manual;
-            form.Location = this.Location;
-            this.Hide();
+            form.Location = Location;
+
+            Hide();
 
             form.FormClosed += (o, args) =>
             {
-                this.DesktopLocation = form.Location;
-                this.Show();
+                DesktopLocation = form.Location;
+                _clientSocketListener.Unbind(ServerCommands.ServerMessage);
+                Show();
             };
         }
         

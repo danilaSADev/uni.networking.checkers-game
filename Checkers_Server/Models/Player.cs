@@ -12,10 +12,9 @@ public class Player
     public int Score { get; set; } = 0;
     public string Identifier { get; set; }
     public string Nickname { get; set; }
-    
+    public string Password { get; set; }
     public string IpAddress { get; set; }
     public int Port { get; set; }
-    public Socket GameSocket { get; init; }
     
     public void Notify(string command, string message)
     {
@@ -31,5 +30,10 @@ public class Player
 
         socket.Shutdown(SocketShutdown.Both);
         socket.Close();
+    }
+
+    public override string ToString()
+    {
+        return base.ToString();
     }
 }

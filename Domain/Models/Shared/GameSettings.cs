@@ -10,6 +10,12 @@
         public int TimeOut { get; set; } = 30000;
     }
 
+    public enum GameState
+    {
+        Winner, 
+        NoTurns
+    }
+    
     public enum GameDifficulty
     {
         Normal, 

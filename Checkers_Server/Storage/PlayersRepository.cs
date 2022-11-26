@@ -1,35 +1,99 @@
-﻿using CheckersServer.Models;
+﻿using System.Data;
+using CheckersServer.Interfaces;
+using CheckersServer.Models;
 using Npgsql;
 
 namespace CheckersServer.Storage;
 
-public class PlayersRepository
+public class LeaderboardRepository : ILeaderboardRepository
 {
-    private string _connectionString;
-    // TODO : create an interface for repository
-    public PlayersRepository(string connectionString)
+    private const string _connectionString = "Host=localhost;Username=postgres;Password=rootPass@1234;Database=checkers-leaderboards";
+    private NpgsqlConnection _connection;
+    public LeaderboardRepository()
     {
-        _connectionString = connectionString;
-    }
+        _connection = new NpgsqlConnection(_connectionString);
+        _connection.Open();
+        var sql = "SELECT version()";
 
-    public IEnumerable<Player> GetPlayers()
-    {
-        throw new NotImplementedException();   
-    }
-
-    public void CreatePlayer(Player player)
-    {
-        throw new NotImplementedException();
+        using var command = new NpgsqlCommand(sql, _connection);
+        Console.WriteLine(command.ExecuteScalar().ToString());
     }
     
-    public Player GetPlayerByIdentifier(string identifier)
+    public void Create(Player player)
     {
-        throw new NotImplementedException();
+        var sql = "INSERT INTO players(identifier, username, password, score) VALUES(@identifier, @username, @password, @score)";
+        using var command = new NpgsqlCommand(sql, _connection);
+        
+        command.Parameters.AddWithValue("identifier", player.Identifier);
+        command.Parameters.AddWithValue("username", player.Nickname);
+        command.Parameters.AddWithValue("password", player.Password);
+        command.Parameters.AddWithValue("score", player.Score);
+        
+        command.Prepare();
+        
+        command.ExecuteNonQuery();
     }
 
-    public void RemovePlayer(Player player)
+    public Player Read(string id)
     {
-        throw new NotImplementedException();
+        string sql = "SELECT id, username, password, score FROM players WHERE ";
+        using var cmd = new NpgsqlCommand(sql, _connection); 
+        using NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+        Player result = new Player();
+        while (rdr.Read())
+        {
+            result = new Player()
+            {
+                Identifier = rdr.GetString(0),
+                Nickname = rdr.GetString(1),
+                Password = rdr.GetString(2),
+                Score = rdr.GetInt32(3)
+            };
+        }
+        return result;
     }
-    
+
+    public bool Exist(string username)
+    {
+        string sql = "SELECT EXISTS(SELECT 1 FROM players WHERE username=@username)";
+        using var cmd = new NpgsqlCommand(sql, _connection);
+        cmd.Parameters.AddWithValue("username", username);
+
+        cmd.Prepare();
+        
+        return (bool)cmd.ExecuteScalar();
+    }
+
+    public void Remove(string id)
+    {
+        string sql = "REMOVE FROM players WHERE id=@id";
+        using var cmd = new NpgsqlCommand(sql, _connection);
+
+        cmd.Parameters.AddWithValue("id", id);
+
+        cmd.Prepare();
+
+        cmd.ExecuteNonQuery();
+    }
+
+    public IEnumerable<Player> ReadAll()
+    {
+        string sql = "SELECT id, username, password, score FROM players";
+        using var cmd = new NpgsqlCommand(sql, _connection); 
+        using NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+        List<Player> result = new List<Player>();
+        while (rdr.Read())
+        {
+            result.Add(new Player()
+            {
+                Identifier = rdr.GetString(0),
+                Nickname = rdr.GetString(1),
+                Password = rdr.GetString(2),
+                Score = rdr.GetInt32(3)
+            });
+        }
+        return result;
+    }
 }

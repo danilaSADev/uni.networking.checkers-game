@@ -24,7 +24,7 @@ public class RetrieveLeaderboardHandler : ICommandHandler
     {
         var unpackedPayload = JsonConvert.DeserializeObject<RequestLeaderboardPayload>(payload);
 
-        if (!_service.IsUserValid(unpackedPayload.UserIdentifier))
+        if (!_service.UserValid(unpackedPayload.UserIdentifier))
             return Response.Failed;
 
         var responsePayload = new FetchedLeaderboardPayload()

@@ -23,7 +23,7 @@ public class RetrieveLobbiesHandler : ICommandHandler
     {
         var unpackedPayload = JsonConvert.DeserializeObject<RequestLobbiesPayload>(payload);
 
-        if (!_multiplayerService.IsUserValid(unpackedPayload.UserIdentifier))
+        if (!_multiplayerService.UserValid(unpackedPayload.UserIdentifier))
             return Response.Failed;
 
         var responsePayload = new FetchedLobbiesPayload()

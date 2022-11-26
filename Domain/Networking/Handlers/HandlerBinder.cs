@@ -25,6 +25,11 @@ public class HandlerBinder
         return Response.Unknown;
     }
 
+    public void Unbind(string command)
+    {
+        _handlers.Remove(command);
+    }
+    
     public void Bind(string command, ICommandHandler handler)
     {
         if (_handlers.Keys.Contains(command))

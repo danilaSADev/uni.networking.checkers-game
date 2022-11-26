@@ -14,8 +14,10 @@ public interface IMultiplayerService
     LobbyInformation CreateRoom(string hostIdentifier, GameSettings settings);
     LobbyInformation ConnectToRoom(string userId, string lobbyId);
     void DisconnectFromRoom(string userId, string lobbyId);
-    bool IsUserValid(string identifier);
+    bool UserValid(string identifier);
+    // todo : turn into separated model
     bool TryMakeTurn(MakeTurnPayload payload);
+    void ChangeLobbyState(string userId, string lobbyId, GameState state);
     List<LobbyInformation> GetLobbies();
     Dictionary<string, int> GetLeaderboard();
 }

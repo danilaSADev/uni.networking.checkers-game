@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CheckersClient.Actions;
 using Domain.Models.Shared;
 namespace CheckersClient.Services
 {
@@ -92,6 +93,25 @@ namespace CheckersClient.Services
                 checker.MovementOptions = toMoveOptions[checker];
             }
         }
+
+        private bool TryAddBeatingOptions(Vector startPosition, Vector direction, int distance, ref List<Vector> options)
+        {
+            Checker extraObstacle = CastRay(startPosition + direction, direction, distance);
+            
+            if (extraObstacle != null)
+            {
+                var positionAfterBeating =  extraObstacle.Position + direction;
+                var isAnyAfterBeatingObstacle = AnyObstacle(positionAfterBeating);
+                    
+                if (IsOnBoard(positionAfterBeating) && !isAnyAfterBeatingObstacle && extraObstacle.Side.Equals(_opponentSide))
+                {
+                    options.Add(positionAfterBeating);
+                    return true;
+                }
+            }
+
+            return false;
+        }
         
         private Tuple<List<Vector>, List<Vector>> CalculatePossibleDirections(Checker checker)
         {
@@ -112,6 +132,7 @@ namespace CheckersClient.Services
                 
                 // TODO : refactor in one piece of code
                 // extra beating options (doing in reverse)
+                anyObstacle = TryAddBeatingOptions(startPosition, reverseDirection, distance, ref beatingOptions);
                 Checker extraObstacle = CastRay(startPosition + reverseDirection, reverseDirection, distance);
                 if (extraObstacle != null)
                 {
@@ -163,9 +184,39 @@ namespace CheckersClient.Services
             return new Tuple<List<Vector>, List<Vector>>(beatingOptions, options);
         }
 
+        /// <summary>
+        /// Checks whether specified position lays on board
+        /// </summary>
+        /// <param name="vec">Position to check</param>
+        /// <returns>Return true if position is on board</returns>
         private bool IsOnBoard(Vector vec)
         {
             return vec.X >= 0 && vec.X < 8 && vec.Y >= 0 && vec.Y < 8;
+        }
+
+        /// <summary>
+        /// Returns true if there's only checkers of player side
+        /// </summary>
+        /// <returns></returns>
+        public bool HasWon()
+        {
+            return true;
+            return _checkers.All(c => c.Side == _playerSide);
+        }
+
+        /// <summary>
+        /// Return true if player has no possible movements
+        /// </summary>
+        /// <returns></returns>
+        public bool NoExtraTurns()
+        {
+            CalculateAllPossibleDirections();
+            foreach (var checker in _checkers)
+            {
+                if (checker.MovementOptions != null && checker.MovementOptions.Count > 0)
+                    return false;
+            }
+            return true;
         }
 
         public void ClickedAt(Vector pos)
@@ -211,7 +262,7 @@ namespace CheckersClient.Services
                 _turnSide = _opponentSide;
             }
             
-            SendTurnToServer(turnFinished, start, end, turnType);  
+            SendTurnToServer(turnFinished, start, end, turnType);
             Selected = null;
         }
 

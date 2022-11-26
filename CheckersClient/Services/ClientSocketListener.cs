@@ -7,10 +7,11 @@ using Domain.Models.Shared;
 using Domain.Networking.Handlers;
 using Domain.Networking.Handlers.Models;
 using CheckersClient.Main;
+using Domain.Networking.Handlers.Interfaces;
 
 namespace CheckersClient.Services
 {
-    public delegate void ServerMessageHandler(string command, string message);
+    public delegate void ServerMessageEventHandler(string command, string message);
     public class ClientSocketListener
     {
         private Thread _thread;
@@ -33,6 +34,16 @@ namespace CheckersClient.Services
             }
         }
 
+        public void Bind(string command, ICommandHandler handler)
+        {
+            _binder.Bind(command, handler);
+        }
+
+        public void Unbind(string command)
+        {
+            _binder.Unbind(command);
+        }
+        
         public ClientSocketListener(HandlerBinder binder)
         {
             _binder = binder;

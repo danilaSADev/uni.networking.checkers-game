@@ -31,6 +31,7 @@ public class ConnectedToServerHandler : ICommandHandler
         {
             Nickname = deserializedPayload?.Username ?? string.Empty,
             Identifier = id,
+            Password = deserializedPayload.Password,
             IpAddress = deserializedPayload.IpAddress,
             Port = deserializedPayload.Port
         };

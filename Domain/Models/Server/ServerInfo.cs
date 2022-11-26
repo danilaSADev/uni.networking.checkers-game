@@ -10,5 +10,13 @@ namespace Domain.Models.Server
         public static readonly int MaxClientResponseTime = 10000;
         public static Socket SharedSocket =>
             new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        
+        
+    }
+
+    public enum ServerMessageType
+    {
+        GameTermination,
+        Notification
     }
 }

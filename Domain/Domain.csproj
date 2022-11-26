@@ -60,6 +60,7 @@
         <Compile Include="Payloads\Client\CreateLobbyPayload.cs" />
         <Compile Include="Payloads\Client\DisconnectFromLobbyPayload.cs" />
         <Compile Include="Payloads\Client\EstablishConnectionPayload.cs" />
+        <Compile Include="Payloads\Client\GameStatePayload.cs" />
         <Compile Include="Payloads\Client\MakeTurnPayload.cs" />
         <Compile Include="Payloads\Client\RequestLeaderboardPayload.cs" />
         <Compile Include="Payloads\Client\RequestLobbiesPayload.cs" />
@@ -71,6 +72,7 @@
         <Compile Include="Payloads\Server\FetchedLeaderboardPayload.cs" />
         <Compile Include="Payloads\Server\FetchedLobbiesPayload.cs" />
         <Compile Include="Payloads\Server\GameStartedPayload.cs" />
+        <Compile Include="Payloads\Server\ServerMessagePayload.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>

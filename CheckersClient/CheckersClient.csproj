@@ -58,6 +58,8 @@
         <Compile Include="Actions\GetLeaderboardAction.cs" />
         <Compile Include="Actions\GetLobbiesAction.cs" />
         <Compile Include="Actions\GetLobbyInformationAction.cs" />
+        <Compile Include="Actions\HasNoTurnsAction.cs" />
+        <Compile Include="Actions\HasWonAction.cs" />
         <Compile Include="Actions\MakeTurnAction.cs" />
         <Compile Include="Forms\GamesListForm.cs">
           <SubType>Form</SubType>
@@ -81,6 +83,7 @@
         <Compile Include="Handlers\LeaderboardUpdatedHandler.cs" />
         <Compile Include="Handlers\LobbiesUpdatedHandler.cs" />
         <Compile Include="Handlers\MadeTurnHandler.cs" />
+        <Compile Include="Handlers\ServerMessageHandler.cs" />
         <Compile Include="Main\ConnectionEstablisher.cs" />
         <Compile Include="Models\Checker.cs" />
         <Compile Include="Models\GameStats.cs" />
@@ -88,7 +91,7 @@
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Services\Board.cs" />
-        <Compile Include="Services\BoardNetworkingLogic.cs">
+        <Compile Include="Services\BoardNetworking.cs">
           <DependentUpon>Board.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ClientSocketListener.cs" />

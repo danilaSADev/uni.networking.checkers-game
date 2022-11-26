@@ -21,6 +21,7 @@ public class Program
         binder.Bind(ClientCommands.ConnectToLobby, new ConnectedToLobbyHandler(multiplayerService));
         binder.Bind(ClientCommands.DisconnectFromLobby, new DisconnectedFromLobbyHandler(multiplayerService));
         binder.Bind(ClientCommands.MakeTurn, new MakeTurnHandler(multiplayerService));
+        binder.Bind(ClientCommands.ChangeGameStats, new GameStateHandler(multiplayerService));
         
         listener.StartServer();
         return 0;

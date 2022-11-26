@@ -49,6 +49,9 @@ namespace CheckersClient.Services
             };
             MakeTurnAction action = new MakeTurnAction(turnInformation);
             var response = action.Request();
+            
+            if (HasWon())
+                new HasWonAction(UserId, _gameSettings.LobbyId).Request();
         }
         
         public bool CheckIfBeatingAndBeat(Vector start, Vector end)
@@ -95,6 +98,9 @@ namespace CheckersClient.Services
 
             if (StateChanged != null) 
                 StateChanged.Invoke(this, new GameStateChangedArgs());
+
+            if (NoExtraTurns())
+                new HasNoTurnsAction( UserId, _gameSettings.LobbyId).Request();
         }
         
         public void SetLobbyInformation(LobbyInformation information)

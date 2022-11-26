@@ -3,12 +3,13 @@ using System.Drawing;
 using System.Windows.Forms;
 using Domain.Models.Shared;
 using CheckersClient.ClientActions;
+using CheckersClient.Handlers;
 using CheckersClient.Properties;
 using CheckersClient.Services;
 
 namespace CheckersClient.Forms
 {
-    public partial class GameForm : Form
+    public partial class GameForm : Form, IGameForm
     {
         private readonly string _userId;
         private readonly LobbyInformation _information;
@@ -134,6 +135,17 @@ namespace CheckersClient.Forms
                 _isPainted = true;
                 DrawBoard();
             }
+        }
+
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show("Your opponent decided to leave the game!", "Oooops!", MessageBoxButtons.OK);
+        }
+
+        public void ShowMessageAndDisconnect(string message)
+        {
+            ShowMessage(message);
+            Close();
         }
     }
 }

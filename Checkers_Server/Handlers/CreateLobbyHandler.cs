@@ -22,7 +22,7 @@ public class CreateLobbyHandler : ICommandHandler
     {
         var parsedPayload = JsonConvert.DeserializeObject<CreateLobbyPayload>(payload);
 
-        if (!_multiplayerService.IsUserValid(parsedPayload.HostIdentifier))
+        if (!_multiplayerService.UserValid(parsedPayload.HostIdentifier))
             return Response.Failed;
         
         var lobbyInformation = _multiplayerService.CreateRoom(parsedPayload.HostIdentifier, parsedPayload.Settings);

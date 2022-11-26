@@ -1,6 +1,7 @@
 ﻿using CheckersServer.Common;
 using CheckersServer.Interfaces;
 using CheckersServer.Models;
+using CheckersServer.Storage;
 using Domain.Models.Server;
 using Domain.Models.Shared;
 using Domain.Payloads.Client;
@@ -14,6 +15,13 @@ public class MultiplayerService : IMultiplayerService
     private readonly List<Player> _players = new();
     private readonly List<Lobby> _rooms = new();
 
+    private ILeaderboardRepository _repository;
+
+    public MultiplayerService()
+    {
+        _repository = new LeaderboardRepository();
+    }
+    
     public void RemovePlayer(string identifier)
     {
         var player = _players.FirstOrDefault(p => p.Identifier == identifier);
@@ -36,9 +44,19 @@ public class MultiplayerService : IMultiplayerService
         return lobby.GetInformation();
     }
 
-    public bool IsUserValid(string identifier)
+    public bool UserValid(string identifier)
     {
         return _players.FirstOrDefault(p => p.Identifier == identifier) != null;
+    }
+
+    public void ChangeLobbyState(string userId, string lobbyId, GameState state)
+    {
+        var lobby = _rooms.FirstOrDefault(r => r.Identifier == lobbyId);
+
+        if (lobby is null || !UserValid(userId))
+            return;
+        
+        lobby.ChangeGameState(userId, state);
     }
 
     public List<LobbyInformation> GetLobbies()
@@ -53,13 +71,15 @@ public class MultiplayerService : IMultiplayerService
 
     public Dictionary<string, int> GetLeaderboard()
     {           
+        var data = _repository.ReadAll();
+
         Dictionary<string, int> fetchedPlayers = new Dictionary<string, int>();
         
-        foreach (var player in _players)
+        foreach (var player in data)
         {
             fetchedPlayers.Add(player.Nickname, player.Score);
         }
-
+        
         return fetchedPlayers;
     }
 
@@ -77,6 +97,12 @@ public class MultiplayerService : IMultiplayerService
 
     public void AddPlayer(Player player)
     {
+        if (!_repository.Exist(player.Nickname))
+            _repository.Create(player);
+
+        if (_repository.Read(player.Identifier).Password != player.Password)
+            return;
+        
         var leaderboard = GetLeaderboard();
         leaderboard.Add(player.Nickname, player.Score);
         var payload = new FetchedLeaderboardPayload()

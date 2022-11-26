@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using CheckersClient.Actions;
 using CheckersClient.Handlers;
 using CheckersClient.Services;
 using CheckersClient.ClientActions;
