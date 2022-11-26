@@ -23,20 +23,20 @@ public class ConnectedToServerHandler : ICommandHandler
         Console.WriteLine("Established connection!");
         var deserializedPayload = JsonConvert.DeserializeObject<EstablishConnectionPayload>(payload);
 
-        // TODO : check whether player password matches
-        // TODO : write data to database        
         var id = IdentifierGenerator.Generate(deserializedPayload.Username);
                 
         var player = new Player
         {
-            Nickname = deserializedPayload?.Username ?? string.Empty,
+            Username = deserializedPayload?.Username ?? string.Empty,
             Identifier = id,
             Password = deserializedPayload.Password,
             IpAddress = deserializedPayload.IpAddress,
             Port = deserializedPayload.Port
         };
 
-        _multiplayerService.AddPlayer(player);
+        var created = _multiplayerService.TryAddPlayer(player);
+        if (!created)
+            return Response.Failed;
 
         var responsePayload = new ConnectionEstablishedPayload
         {

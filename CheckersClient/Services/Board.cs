@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using CheckersClient.Actions;
 using Domain.Models.Shared;
+
 namespace CheckersClient.Services
 {
     public partial class Board
@@ -94,10 +95,10 @@ namespace CheckersClient.Services
             }
         }
 
-        private bool TryAddBeatingOptions(Vector startPosition, Vector direction, int distance, ref List<Vector> options)
+        private bool TryAddBeatingOptions(Checker checker, Vector direction, int distance, ref List<Vector> options)
         {
+            Vector startPosition = checker.Position;
             Checker extraObstacle = CastRay(startPosition + direction, direction, distance);
-            
             if (extraObstacle != null)
             {
                 var positionAfterBeating =  extraObstacle.Position + direction;
@@ -106,10 +107,18 @@ namespace CheckersClient.Services
                 if (IsOnBoard(positionAfterBeating) && !isAnyAfterBeatingObstacle && extraObstacle.Side.Equals(_opponentSide))
                 {
                     options.Add(positionAfterBeating);
+                    
+                    if (checker.IsKing)
+                    {
+                        for (Vector vec = positionAfterBeating + direction; IsOnBoard(vec) && !AnyObstacle(vec); vec += direction)
+                        {
+                            options.Add(vec);
+                        }
+                    }
+                    
                     return true;
                 }
             }
-
             return false;
         }
         
@@ -118,53 +127,24 @@ namespace CheckersClient.Services
             Vector startPosition = checker.Position;
             List<Vector> options = new List<Vector>();
             List<Vector> beatingOptions = new List<Vector>();
-            
-            var oppositeSide = (Side)(((int) checker.Side + 1) % 2); 
+             
             var sign = checker.Side == Side.Black ? -1 : 1;
-            
             var newDirections = _directions.Select(d => d * sign).ToList();
             
             foreach (var direction in newDirections)
             {
-                bool anyObstacle = false;
                 int distance = checker.IsKing ? 8 : 1;
                 var reverseDirection = new Vector(direction.X, direction.Y * -1);
                 
-                // TODO : refactor in one piece of code
-                // extra beating options (doing in reverse)
-                anyObstacle = TryAddBeatingOptions(startPosition, reverseDirection, distance, ref beatingOptions);
-                Checker extraObstacle = CastRay(startPosition + reverseDirection, reverseDirection, distance);
-                if (extraObstacle != null)
-                {
-                    var positionAfterBeating =  extraObstacle.Position + reverseDirection;
-                    var isAnyAfterBeatingObstacle = AnyObstacle(positionAfterBeating);
-                    
-                    if (IsOnBoard(positionAfterBeating) && !isAnyAfterBeatingObstacle && extraObstacle.Side.Equals(oppositeSide))
-                    {
-                        beatingOptions.Add(positionAfterBeating);
-                        anyObstacle = true;
-                    }
-                }
-                
-                Checker obstacle = CastRay(startPosition + direction, direction, distance);
-                // if any obstacle on the way
-                if (obstacle != null)
-                {
-                    var positionAfterBeating = obstacle.Position + direction;
-                    var isAnyAfterBeatingObstacle = AnyObstacle(positionAfterBeating);
-                    
-                    if (IsOnBoard(positionAfterBeating) && !isAnyAfterBeatingObstacle && obstacle.Side.Equals(oppositeSide))
-                    {
-                        beatingOptions.Add(positionAfterBeating);
-                        anyObstacle = true;
-                    }
-                }
+                // all beating options (extra in reverse)
+                var anyObstacle = TryAddBeatingOptions(checker, reverseDirection, distance, ref beatingOptions);
+                anyObstacle = anyObstacle || TryAddBeatingOptions(checker, direction, distance, ref beatingOptions);
                 
                 if (anyObstacle)
                     continue;
                 
+                // TODO : could be merged but I'm lazy
                 int counter = 0;
-
                 for (Vector vec = startPosition + direction; IsOnBoard(vec) && counter < distance && !AnyObstacle(vec); vec += direction)
                 {
                     options.Add(vec);
@@ -173,7 +153,8 @@ namespace CheckersClient.Services
 
                 if (checker.IsKing)
                 {
-                    for (Vector vec = startPosition + reverseDirection; IsOnBoard(vec) && counter < distance && !AnyObstacle(vec); vec += + reverseDirection)
+                    counter = 0;
+                    for (Vector vec = startPosition + reverseDirection; IsOnBoard(vec) && counter < distance && !AnyObstacle(vec); vec += reverseDirection)
                     {
                         options.Add(vec);
                         counter++;
@@ -200,7 +181,6 @@ namespace CheckersClient.Services
         /// <returns></returns>
         public bool HasWon()
         {
-            return true;
             return _checkers.All(c => c.Side == _playerSide);
         }
 

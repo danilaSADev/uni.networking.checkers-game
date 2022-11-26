@@ -8,7 +8,7 @@ namespace CheckersServer.Interfaces;
 
 public interface IMultiplayerService
 {
-    void AddPlayer(Player player);
+    bool TryAddPlayer(Player player);
     void RemovePlayer(string payload);
     LobbyInformation GetLobbyInformation(string lobbyIdentifier);
     LobbyInformation CreateRoom(string hostIdentifier, GameSettings settings);

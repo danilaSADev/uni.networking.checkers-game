@@ -25,7 +25,7 @@ public class LeaderboardRepository : ILeaderboardRepository
         using var command = new NpgsqlCommand(sql, _connection);
         
         command.Parameters.AddWithValue("identifier", player.Identifier);
-        command.Parameters.AddWithValue("username", player.Nickname);
+        command.Parameters.AddWithValue("username", player.Username);
         command.Parameters.AddWithValue("password", player.Password);
         command.Parameters.AddWithValue("score", player.Score);
         
@@ -34,10 +34,12 @@ public class LeaderboardRepository : ILeaderboardRepository
         command.ExecuteNonQuery();
     }
 
-    public Player Read(string id)
+    public Player ReadByUsername(string username)
     {
-        string sql = "SELECT id, username, password, score FROM players WHERE ";
-        using var cmd = new NpgsqlCommand(sql, _connection); 
+        string sql = "SELECT id, username, password, score FROM players WHERE username=@username";
+        using var cmd = new NpgsqlCommand(sql, _connection);
+        cmd.Parameters.AddWithValue("username", username);
+        
         using NpgsqlDataReader rdr = cmd.ExecuteReader();
 
         Player result = new Player();
@@ -46,7 +48,30 @@ public class LeaderboardRepository : ILeaderboardRepository
             result = new Player()
             {
                 Identifier = rdr.GetString(0),
-                Nickname = rdr.GetString(1),
+                Username = rdr.GetString(1),
+                Password = rdr.GetString(2),
+                Score = rdr.GetInt32(3)
+            };
+        }
+        return result;
+        
+    }
+
+    public Player ReadById(string id)
+    {
+        string sql = "SELECT id, username, password, score FROM players WHERE id=@id";
+        using var cmd = new NpgsqlCommand(sql, _connection);
+        cmd.Parameters.AddWithValue("id", id);
+        
+        using NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+        Player result = new Player();
+        while (rdr.Read())
+        {
+            result = new Player()
+            {
+                Identifier = rdr.GetString(0),
+                Username = rdr.GetString(1),
                 Password = rdr.GetString(2),
                 Score = rdr.GetInt32(3)
             };
@@ -89,7 +114,7 @@ public class LeaderboardRepository : ILeaderboardRepository
             result.Add(new Player()
             {
                 Identifier = rdr.GetString(0),
-                Nickname = rdr.GetString(1),
+                Username = rdr.GetString(1),
                 Password = rdr.GetString(2),
                 Score = rdr.GetInt32(3)
             });

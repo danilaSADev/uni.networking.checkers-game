@@ -11,7 +11,7 @@ public class Player
 {
     public int Score { get; set; } = 0;
     public string Identifier { get; set; }
-    public string Nickname { get; set; }
+    public string Username { get; set; }
     public string Password { get; set; }
     public string IpAddress { get; set; }
     public int Port { get; set; }

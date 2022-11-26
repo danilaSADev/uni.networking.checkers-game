@@ -77,7 +77,7 @@ public class MultiplayerService : IMultiplayerService
         
         foreach (var player in data)
         {
-            fetchedPlayers.Add(player.Nickname, player.Score);
+            fetchedPlayers.Add(player.Username, player.Score);
         }
         
         return fetchedPlayers;
@@ -95,22 +95,25 @@ public class MultiplayerService : IMultiplayerService
         .First(l => l.Identifier == payload.LobbyId)
         .TryMakeTurn(payload);
 
-    public void AddPlayer(Player player)
+    public bool TryAddPlayer(Player player)
     {
-        if (!_repository.Exist(player.Nickname))
+        if (!_repository.Exist(player.Username))
             _repository.Create(player);
 
-        if (_repository.Read(player.Identifier).Password != player.Password)
-            return;
+        var possiblePlayer = _repository.ReadByUsername(player.Username);
+        if (possiblePlayer.Password != player.Password)
+            return false;
+
+        player.Identifier = possiblePlayer.Identifier;
         
         var leaderboard = GetLeaderboard();
-        leaderboard.Add(player.Nickname, player.Score);
         var payload = new FetchedLeaderboardPayload()
         {
             Leaderboard = leaderboard
         };
         NotifyAll(ServerCommands.LeaderboardUpdated, JsonConvert.SerializeObject(payload));
         _players.Add(player);
+        return true;
     }
 
     public LobbyInformation CreateRoom(string hostIdentifier, GameSettings settings)
