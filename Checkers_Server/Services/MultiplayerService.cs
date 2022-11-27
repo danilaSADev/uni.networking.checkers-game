@@ -29,6 +29,7 @@ public class MultiplayerService : IMultiplayerService
         if (player == null)
             return;
         
+        _repository.Update(player);
         _players.Remove(player);
         var leaderboard = GetLeaderboard();
         var payload = new FetchedLeaderboardPayload()
@@ -71,10 +72,9 @@ public class MultiplayerService : IMultiplayerService
 
     public Dictionary<string, int> GetLeaderboard()
     {           
-        var data = _repository.ReadAll();
-
-        Dictionary<string, int> fetchedPlayers = new Dictionary<string, int>();
+        var data = _players;
         
+        Dictionary<string, int> fetchedPlayers = new Dictionary<string, int>();
         foreach (var player in data)
         {
             fetchedPlayers.Add(player.Username, player.Score);
@@ -104,6 +104,8 @@ public class MultiplayerService : IMultiplayerService
         if (possiblePlayer.Password != player.Password)
             return false;
 
+        possiblePlayer.IpAddress = player.IpAddress;
+        possiblePlayer.Port = player.Port;
         player.Identifier = possiblePlayer.Identifier;
         
         var leaderboard = GetLeaderboard();
@@ -112,7 +114,7 @@ public class MultiplayerService : IMultiplayerService
             Leaderboard = leaderboard
         };
         NotifyAll(ServerCommands.LeaderboardUpdated, JsonConvert.SerializeObject(payload));
-        _players.Add(player);
+        _players.Add(possiblePlayer);
         return true;
     }
 
@@ -144,7 +146,7 @@ public class MultiplayerService : IMultiplayerService
 
         if (lobby == null || player == null)
             throw new NullReferenceException();
-
+        
         lobby.DisconnectPlayer(player);
 
         if (lobby.PlayersAmount == 0)

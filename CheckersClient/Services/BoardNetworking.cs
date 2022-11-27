@@ -22,6 +22,7 @@ namespace CheckersClient.Services
     {
         private GameSettings _gameSettings;
         public Side PlayerSide => _playerSide;
+        public Side TurnSide => _turnSide;
         
         private Side _playerSide;
         private Side _opponentSide;
@@ -117,6 +118,10 @@ namespace CheckersClient.Services
             _playerSide = payload.PlayerSide;
             _opponentSide = (Side)(((int)_playerSide + 1) % 2);
             _turnCreditsLeft = _playerSide == Side.White ? 1 : 2;
+            
+            Reinitialize();
+            InitializeBoard();
+            
             _isGameRunning = true;
             
             if (StateChanged != null) 
@@ -125,6 +130,7 @@ namespace CheckersClient.Services
         
         public void Reinitialize()
         {
+            _turnSide = Side.White;
             _checkers.Clear();
             _isGameRunning = false;
         }

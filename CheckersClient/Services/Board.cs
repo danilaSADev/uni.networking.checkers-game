@@ -164,6 +164,8 @@ namespace CheckersClient.Services
             
             return new Tuple<List<Vector>, List<Vector>>(beatingOptions, options);
         }
+        
+        
 
         /// <summary>
         /// Checks whether specified position lays on board
@@ -237,11 +239,16 @@ namespace CheckersClient.Services
 
             var turnFinished = (notBeating || notNextMoveGuaranteed) && _turnCreditsLeft == 0;
 
-            if (turnFinished)
+            if (!notBeating && !notNextMoveGuaranteed)
             {
+                _turnCreditsLeft++;
+            }
+            else
+            { 
                 _turnSide = _opponentSide;
             }
             
+
             SendTurnToServer(turnFinished, start, end, turnType);
             Selected = null;
         }

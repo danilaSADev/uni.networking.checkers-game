@@ -28,7 +28,7 @@ namespace CheckersClient.Forms
         private void GameForm_Load(object sender, EventArgs e)
         {
             CheckForIllegalCrossThreadCalls = false;
-            _board.InitializeBoard();
+            // _board.InitializeBoard();
             _board.StateChanged += OnStatsChanged;
         }
         
@@ -92,8 +92,8 @@ namespace CheckersClient.Forms
 
         private void DrawGameStats()
         {
-            // tODO : drawing all game stats
             playerSide.Text = _board.PlayerSide.ToString();
+            turnSideLabel.Text = _board.TurnSide.ToString();
         }
         
         private void panel1_MouseClick(object sender, MouseEventArgs e)
@@ -123,7 +123,7 @@ namespace CheckersClient.Forms
         private void OnLeavingLobby(object sender, FormClosedEventArgs e)
         {
             _board.StateChanged -= OnStatsChanged;
-            _board.Reinitialize();
+            // _board.Reinitialize();
             var action = new DisconnectFromLobbyAction(_userId, _information.Identifier);
             action.Request();
         }
@@ -139,7 +139,7 @@ namespace CheckersClient.Forms
 
         public void ShowMessage(string message)
         {
-            MessageBox.Show("Your opponent decided to leave the game!", "Oooops!", MessageBoxButtons.OK);
+            MessageBox.Show(message, "Notification!", MessageBoxButtons.OK);
         }
 
         public void ShowMessageAndDisconnect(string message)

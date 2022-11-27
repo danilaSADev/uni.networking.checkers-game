@@ -1,6 +1,4 @@
 ﻿using CheckersServer.Models;
-using CheckersServer.Services;
-using Domain.Models;
 using Domain.Models.Shared;
 using Domain.Payloads.Client;
 
@@ -8,6 +6,11 @@ namespace CheckersServer.Interfaces;
 
 public interface IMultiplayerService
 {
+    /// <summary>
+    /// Tries to add player to the server. Could change player's id if it is needed.
+    /// </summary>
+    /// <param name="player">Player to add</param>
+    /// <returns>Returns true or false depending on player added or not</returns>
     bool TryAddPlayer(Player player);
     void RemovePlayer(string payload);
     LobbyInformation GetLobbyInformation(string lobbyIdentifier);

@@ -21,7 +21,7 @@ public class LeaderboardRepository : ILeaderboardRepository
     
     public void Create(Player player)
     {
-        var sql = "INSERT INTO players(identifier, username, password, score) VALUES(@identifier, @username, @password, @score)";
+        var sql = "INSERT INTO players(id, username, password, score) VALUES(@identifier, @username, @password, @score)";
         using var command = new NpgsqlCommand(sql, _connection);
         
         command.Parameters.AddWithValue("identifier", player.Identifier);
@@ -45,7 +45,7 @@ public class LeaderboardRepository : ILeaderboardRepository
         Player result = new Player();
         while (rdr.Read())
         {
-            result = new Player()
+            result = new Player
             {
                 Identifier = rdr.GetString(0),
                 Username = rdr.GetString(1),
@@ -55,6 +55,18 @@ public class LeaderboardRepository : ILeaderboardRepository
         }
         return result;
         
+    }
+
+    public void Update(Player player)
+    {
+        var sql = "UPDATE players SET score = @score WHERE id=@id ";
+
+        using var cmd = new NpgsqlCommand(sql, _connection);
+        
+        cmd.Parameters.AddWithValue("id", player.Identifier);
+        cmd.Parameters.AddWithValue("score", player.Score);
+
+        cmd.ExecuteNonQuery();
     }
 
     public Player ReadById(string id)

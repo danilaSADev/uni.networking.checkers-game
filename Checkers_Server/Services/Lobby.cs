@@ -64,12 +64,12 @@ public class Lobby
 
     private void FinishGame()
     {
-        var orderedScore = _localScore.OrderBy(p => p.Value).ToArray();
+        var orderedScore = _localScore.OrderByDescending(p => p.Value).ToArray();
 
         // if both players has same score then draw
         if (orderedScore[0].Value == orderedScore[1].Value)
         {
-            var payload = new ServerMessagePayload()
+            var payload = new ServerMessagePayload
             {
                 Message = "It's a draw! Nobody gained points.",
                 Type = ServerMessageType.GameTermination
@@ -206,6 +206,7 @@ public class Lobby
         if (_roundsLeft == 0)
         {
             FinishGame();
+            return;
         }
         FinishRound();
     }

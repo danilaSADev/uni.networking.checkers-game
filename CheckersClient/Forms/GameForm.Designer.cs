@@ -33,7 +33,6 @@ namespace CheckersClient.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameForm));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.playerSide = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -41,6 +40,7 @@ namespace CheckersClient.Forms
             this.label4 = new System.Windows.Forms.Label();
             this.timeForTurnLeftLabel = new System.Windows.Forms.Label();
             this.winScreenLabel = new System.Windows.Forms.Label();
+            this.turnSideLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // panel1
@@ -53,23 +53,6 @@ namespace CheckersClient.Forms
             this.panel1.Size = new System.Drawing.Size(320, 320);
             this.panel1.TabIndex = 0;
             this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseClick);
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.Transparent;
-            this.button1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button1.BackgroundImage")));
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.button1.FlatAppearance.BorderSize = 3;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.button1.Location = new System.Drawing.Point(401, 73);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(140, 39);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Здатись";
-            this.button1.UseVisualStyleBackColor = false;
             // 
             // label1
             // 
@@ -104,11 +87,11 @@ namespace CheckersClient.Forms
             // 
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label2.Location = new System.Drawing.Point(401, 243);
+            this.label2.Location = new System.Drawing.Point(401, 306);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(140, 26);
+            this.label2.Size = new System.Drawing.Size(175, 26);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Ваша сторона:";
+            this.label2.Text = "Сторона яка робить хід:";
             // 
             // label4
             // 
@@ -139,6 +122,15 @@ namespace CheckersClient.Forms
             this.winScreenLabel.Size = new System.Drawing.Size(320, 26);
             this.winScreenLabel.TabIndex = 8;
             // 
+            // turnSideLabel
+            // 
+            this.turnSideLabel.BackColor = System.Drawing.Color.Transparent;
+            this.turnSideLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.turnSideLabel.Location = new System.Drawing.Point(401, 332);
+            this.turnSideLabel.Name = "turnSideLabel";
+            this.turnSideLabel.Size = new System.Drawing.Size(140, 37);
+            this.turnSideLabel.TabIndex = 9;
+            // 
             // GameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -146,6 +138,7 @@ namespace CheckersClient.Forms
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(794, 571);
+            this.Controls.Add(this.turnSideLabel);
             this.Controls.Add(this.winScreenLabel);
             this.Controls.Add(this.timeForTurnLeftLabel);
             this.Controls.Add(this.label4);
@@ -153,7 +146,6 @@ namespace CheckersClient.Forms
             this.Controls.Add(this.label3);
             this.Controls.Add(this.playerSide);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.panel1);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -168,6 +160,8 @@ namespace CheckersClient.Forms
             this.ResumeLayout(false);
         }
 
+        private System.Windows.Forms.Label turnSideLabel;
+
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label timeForTurnLeftLabel;
         private System.Windows.Forms.Label winScreenLabel;
@@ -179,8 +173,6 @@ namespace CheckersClient.Forms
         private System.Windows.Forms.Label label3;
 
         private System.Windows.Forms.Label label1;
-
-        private System.Windows.Forms.Button button1;
 
         private System.Windows.Forms.Panel panel1;
 

@@ -22,13 +22,10 @@ public class ConnectedToServerHandler : ICommandHandler
     {
         Console.WriteLine("Established connection!");
         var deserializedPayload = JsonConvert.DeserializeObject<EstablishConnectionPayload>(payload);
-
-        var id = IdentifierGenerator.Generate(deserializedPayload.Username);
-                
         var player = new Player
         {
             Username = deserializedPayload?.Username ?? string.Empty,
-            Identifier = id,
+            Identifier = IdentifierGenerator.Generate(deserializedPayload.Username),
             Password = deserializedPayload.Password,
             IpAddress = deserializedPayload.IpAddress,
             Port = deserializedPayload.Port
@@ -40,7 +37,7 @@ public class ConnectedToServerHandler : ICommandHandler
 
         var responsePayload = new ConnectionEstablishedPayload
         {
-            UserIdentifier = id
+            UserIdentifier = player.Identifier
         };
 
         var response = new Response
