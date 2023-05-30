@@ -1,7 +1,7 @@
 # checkers-game
 This projects is developed to learn about TCP sockets mechanism. 
 
-Project is divided into three parts:
+Project is divided into four parts:
 - Domain - storing useful information about game essentials and different configurations
 - SharedDomain - represents logic available to both server and client sides.
 - Server - checkers server implementation.
